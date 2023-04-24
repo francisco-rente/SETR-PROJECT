@@ -40,10 +40,10 @@ class Alphabot {
             bcm2835_pwm_set_mode(0, 1, 1);
             bcm2835_pwm_set_range(0, 1024);
             bcm2835_pwm_set_mode(1, 1, 1);
-            bcm2835_pwm_set_range(0, 1024);
+            bcm2835_pwm_set_range(1, 1024);
 
-            bcm2835_pwm_set_data(0, 512);
-            bcm2835_pwm_set_data(1, 512);
+            bcm2835_pwm_set_data(0, 128);
+            bcm2835_pwm_set_data(1, 128);
 
             std::cout << "pwm 2" << std::endl;
             // bcm2835_pwm_set_data(0, 1);
@@ -51,15 +51,20 @@ class Alphabot {
 
             std::cout << "gpio write" << std::endl;
             bcm2835_gpio_write(4, HIGH);
-            this->backward();
-            bcm2835_delay(500);
-            bcm2835_gpio_write(4, LOW);
+            // this->backward();
+            // bcm2835_gpio_write(this->AIN1, LOW); // tHIS WORKS
+            // bcm2835_gpio_write(this->AIN2, HIGH); // THIS WORKS
+            // bcm2835_gpio_write(this->BIN1, LOW);
+            // bcm2835_gpio_write(this->BIN2, HIGH);
             this->left();
-            bcm2835_delay(500);
-            this->forward();
-            bcm2835_delay(500);
-            this->right();
-            bcm2835_delay(500);
+            bcm2835_delay(1500);
+            bcm2835_gpio_write(4, LOW);
+            // this->left();
+            // bcm2835_delay(1000);
+            // this->forward();
+            // bcm2835_delay(1000);
+            // this->right();
+            // bcm2835_delay(1000);
 
             // self.PWMA = GPIO.PWM(self.ENA,500)
             // self.PWMB = GPIO.PWM(self.ENB,500)

@@ -11,19 +11,17 @@ class Alphabot {
         int ENB;
     public:
         Alphabot() {
-            std::cout << "Hello world" << std::endl;
             this->AIN1 = 12;
             this->AIN2 = 13;
             this->ENA = 6;
             this->BIN1 = 20;
             this->BIN2 = 21;
-            this->ENB = 26;        
+            this->ENB = 26; 
         }
 
         int init(){
             std::cout << "init" << std::endl;
             if(!bcm2835_init()) {
-                std::cout << "wtf" << std::endl;
                 return 1;
             }
 
@@ -33,7 +31,7 @@ class Alphabot {
             bcm2835_gpio_fsel(this->BIN1, BCM2835_GPIO_FSEL_OUTP);
             bcm2835_gpio_fsel(this->BIN2, BCM2835_GPIO_FSEL_OUTP);
             bcm2835_gpio_fsel(this->ENA, BCM2835_GPIO_FSEL_ALT5);
-            bcm2835_gpio_fsel(this->ENB, BCM2835_GPIO_FSEL_OUTP);
+            bcm2835_gpio_fsel(this->ENB, BCM2835_GPIO_FSEL_ALT5);
 
             bcm2835_gpio_fsel(4, BCM2835_GPIO_FSEL_OUTP);
 
@@ -44,36 +42,24 @@ class Alphabot {
             bcm2835_pwm_set_mode(1, 1, 1);
             bcm2835_pwm_set_range(0, 1024);
 
-            std::cout << "pwm 2" << std::endl;
             bcm2835_pwm_set_data(0, 512);
             bcm2835_pwm_set_data(1, 512);
 
+            std::cout << "pwm 2" << std::endl;
+            // bcm2835_pwm_set_data(0, 1);
+            // bcm2835_pwm_set_data(1, 1);
+
             std::cout << "gpio write" << std::endl;
-            bcm2835_gpio_write(this->AIN1, LOW);
-            bcm2835_gpio_write(this->AIN2, HIGH);
-            bcm2835_gpio_write(this->BIN1, LOW);
-            bcm2835_gpio_write(this->BIN2, HIGH);
-
-            bcm2835_delay(1500);
-
-            int direction = 1;
-            int data = 1;
-            while (1)
-            {
-                if (data == 1)
-                    direction = 1;
-                else if (data == 1024-1)
-                    direction = -1;
-                data += direction;
-                bcm2835_pwm_set_data(0, data);
-                bcm2835_delay(50);
-            }
-
-
             bcm2835_gpio_write(4, HIGH);
+            this->backward();
             bcm2835_delay(500);
             bcm2835_gpio_write(4, LOW);
-            bcm2835_close();
+            this->left();
+            bcm2835_delay(500);
+            this->forward();
+            bcm2835_delay(500);
+            this->right();
+            bcm2835_delay(500);
 
             // self.PWMA = GPIO.PWM(self.ENA,500)
             // self.PWMB = GPIO.PWM(self.ENB,500)
@@ -84,13 +70,43 @@ class Alphabot {
             return 0;
         }
 
+        int stop() {
+            bcm2835_gpio_write(this->AIN1, LOW);
+            bcm2835_gpio_write(this->AIN2, LOW); 
+            bcm2835_gpio_write(this->BIN1, LOW);
+            bcm2835_gpio_write(this->BIN2, LOW);
+            return 0;
+        }
+
         int forward() {
-            // self.PWMA.ChangeDutyCycle(self.PA)
-            // self.PWMB.ChangeDutyCycle(self.PB)
-            // GPIO.output(self.AIN1,GPIO.LOW)
-            // GPIO.output(self.AIN2,GPIO.HIGH)
-            // GPIO.output(self.BIN1,GPIO.LOW)
-            // GPIO.output(self.BIN2,GPIO.HIGH)
+            bcm2835_gpio_write(this->AIN1, LOW);
+            bcm2835_gpio_write(this->AIN2, HIGH); 
+            bcm2835_gpio_write(this->BIN1, LOW);
+            bcm2835_gpio_write(this->BIN2, HIGH);
+            return 0;
+        }
+
+        int backward() {
+            bcm2835_gpio_write(this->AIN1, HIGH);
+            bcm2835_gpio_write(this->AIN2, LOW); 
+            bcm2835_gpio_write(this->BIN1, HIGH);
+            bcm2835_gpio_write(this->BIN2, LOW);
+            return 0;
+        }
+
+        int left() {
+            bcm2835_gpio_write(this->AIN1, HIGH);
+            bcm2835_gpio_write(this->AIN2, LOW); 
+            bcm2835_gpio_write(this->BIN1, LOW);
+            bcm2835_gpio_write(this->BIN2, HIGH);
+            return 0;
+        }
+
+        int right() {
+            bcm2835_gpio_write(this->AIN1, LOW);
+            bcm2835_gpio_write(this->AIN2, HIGH); 
+            bcm2835_gpio_write(this->BIN1, HIGH);
+            bcm2835_gpio_write(this->BIN2, LOW);
             return 0;
         }
     
@@ -122,21 +138,12 @@ class Alphabot {
 };
 
 int main() {
-    // if(!bcm2835_init()) {
-    //     return 1;
-    // }
-    // bcm2835_gpio_fsel(4, BCM2835_GPIO_FSEL_OUTP);
-
-    // bcm2835_gpio_write(4, HIGH);
-    // bcm2835_delay(500);
-    // bcm2835_gpio_write(4, LOW);
-    // bcm2835_close();
-
     Alphabot alphabot = Alphabot();
     if(alphabot.init()) {
         std::cout << "exited with error code 1";
         return 1;
     }
+    alphabot.stop();
     bcm2835_close();
     return 0;
 }

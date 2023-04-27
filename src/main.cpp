@@ -1,5 +1,8 @@
 #include <iostream>
-#include <bcm2835.h>
+#include <pigpio.h>
+
+#define HIGH 1
+#define LOW 0
 
 class Alphabot {
     private:
@@ -9,6 +12,8 @@ class Alphabot {
         int BIN2;
         int ENA;
         int ENB;
+        int speed;
+
     public:
         Alphabot() {
             this->AIN1 = 12;
@@ -16,130 +21,91 @@ class Alphabot {
             this->ENA = 6;
             this->BIN1 = 20;
             this->BIN2 = 21;
-            this->ENB = 26; 
+            this->ENB = 26;
+            this->speed = 10;
         }
 
         int init(){
             std::cout << "init" << std::endl;
-            if(!bcm2835_init()) {
+            if (gpioInitialise() < 0)
+            {
                 return 1;
             }
 
             std::cout << "set pins" << std::endl;
-            bcm2835_gpio_fsel(this->AIN1, BCM2835_GPIO_FSEL_OUTP);
-            bcm2835_gpio_fsel(this->AIN2, BCM2835_GPIO_FSEL_OUTP);
-            bcm2835_gpio_fsel(this->BIN1, BCM2835_GPIO_FSEL_OUTP);
-            bcm2835_gpio_fsel(this->BIN2, BCM2835_GPIO_FSEL_OUTP);
-            bcm2835_gpio_fsel(this->ENA, BCM2835_GPIO_FSEL_ALT5);
-            bcm2835_gpio_fsel(this->ENB, BCM2835_GPIO_FSEL_ALT5);
+            gpioSetMode(AIN1, PI_OUTPUT);
+            gpioSetMode(AIN2, PI_OUTPUT);
+            gpioSetMode(BIN1, PI_OUTPUT);
+            gpioSetMode(BIN2, PI_OUTPUT);
+            gpioSetMode(ENA, PI_OUTPUT);
+            gpioSetMode(ENB, PI_OUTPUT);
 
-            bcm2835_gpio_fsel(4, BCM2835_GPIO_FSEL_OUTP);
+            gpioSetPWMfrequency(ENA, 500);
+            gpioSetPWMfrequency(ENB, 500);
+            gpioSetPWMrange(ENA, 100);
+            gpioSetPWMrange(ENB, 100);
 
-            std::cout << "pwm 1" << std::endl;
-            bcm2835_pwm_set_clock(BCM2835_PWM_CLOCK_DIVIDER_2048);
-            bcm2835_pwm_set_mode(0, 1, 1);
-            bcm2835_pwm_set_range(0, 1024);
-            bcm2835_pwm_set_mode(1, 1, 1);
-            bcm2835_pwm_set_range(1, 1024);
+            // bcm2835_gpio_write(4, HIGH);
+            // bcm2835_delay(1500);
+            // bcm2835_gpio_write(4, LOW);
 
-            bcm2835_pwm_set_data(0, 128);
-            bcm2835_pwm_set_data(1, 128);
+            return 0;
+        }
 
-            std::cout << "pwm 2" << std::endl;
-            // bcm2835_pwm_set_data(0, 1);
-            // bcm2835_pwm_set_data(1, 1);
-
-            std::cout << "gpio write" << std::endl;
-            bcm2835_gpio_write(4, HIGH);
-            // this->backward();
-            // bcm2835_gpio_write(this->AIN1, LOW); // tHIS WORKS
-            // bcm2835_gpio_write(this->AIN2, HIGH); // THIS WORKS
-            // bcm2835_gpio_write(this->BIN1, LOW);
-            // bcm2835_gpio_write(this->BIN2, HIGH);
-            this->left();
-            bcm2835_delay(1500);
-            bcm2835_gpio_write(4, LOW);
-            // this->left();
-            // bcm2835_delay(1000);
-            // this->forward();
-            // bcm2835_delay(1000);
-            // this->right();
-            // bcm2835_delay(1000);
-
-            // self.PWMA = GPIO.PWM(self.ENA,500)
-            // self.PWMB = GPIO.PWM(self.ENB,500)
-            // self.PWMA.start(self.PA)
-            // self.PWMB.start(self.PB)
-            // self.stop()
-
+        int setSpeed(int speed) {
+            this->speed = speed;
             return 0;
         }
 
         int stop() {
-            bcm2835_gpio_write(this->AIN1, LOW);
-            bcm2835_gpio_write(this->AIN2, LOW); 
-            bcm2835_gpio_write(this->BIN1, LOW);
-            bcm2835_gpio_write(this->BIN2, LOW);
+            gpioPWM(this->ENA, 0);
+            gpioPWM(this->ENB, 0);
+            gpioWrite(this->AIN1, LOW);
+            gpioWrite(this->AIN2, LOW); 
+            gpioWrite(this->BIN1, LOW);
+            gpioWrite(this->BIN2, LOW);
             return 0;
         }
 
         int forward() {
-            bcm2835_gpio_write(this->AIN1, LOW);
-            bcm2835_gpio_write(this->AIN2, HIGH); 
-            bcm2835_gpio_write(this->BIN1, LOW);
-            bcm2835_gpio_write(this->BIN2, HIGH);
+            gpioPWM(this->ENA, this->speed);
+            gpioPWM(this->ENB, this->speed);
+            gpioWrite(this->AIN1, LOW);
+            gpioWrite(this->AIN2, HIGH); 
+            gpioWrite(this->BIN1, LOW);
+            gpioWrite(this->BIN2, HIGH);
             return 0;
         }
 
         int backward() {
-            bcm2835_gpio_write(this->AIN1, HIGH);
-            bcm2835_gpio_write(this->AIN2, LOW); 
-            bcm2835_gpio_write(this->BIN1, HIGH);
-            bcm2835_gpio_write(this->BIN2, LOW);
+            gpioPWM(this->ENA, this->speed);
+            gpioPWM(this->ENB, this->speed);
+            gpioWrite(this->AIN1, HIGH);
+            gpioWrite(this->AIN2, LOW); 
+            gpioWrite(this->BIN1, HIGH);
+            gpioWrite(this->BIN2, LOW);
             return 0;
         }
 
         int left() {
-            bcm2835_gpio_write(this->AIN1, HIGH);
-            bcm2835_gpio_write(this->AIN2, LOW); 
-            bcm2835_gpio_write(this->BIN1, LOW);
-            bcm2835_gpio_write(this->BIN2, HIGH);
+            gpioPWM(this->ENA, 30);
+            gpioPWM(this->ENB, 30);
+            gpioWrite(this->AIN1, HIGH);
+            gpioWrite(this->AIN2, LOW); 
+            gpioWrite(this->BIN1, LOW);
+            gpioWrite(this->BIN2, HIGH);
             return 0;
         }
 
         int right() {
-            bcm2835_gpio_write(this->AIN1, LOW);
-            bcm2835_gpio_write(this->AIN2, HIGH); 
-            bcm2835_gpio_write(this->BIN1, HIGH);
-            bcm2835_gpio_write(this->BIN2, LOW);
+            gpioPWM(this->ENA, 30);
+            gpioPWM(this->ENB, 30);
+            gpioWrite(this->AIN1, LOW);
+            gpioWrite(this->AIN2, HIGH); 
+            gpioWrite(this->BIN1, HIGH);
+            gpioWrite(this->BIN2, LOW);
             return 0;
         }
-    
-        // def setPWMA(self,value):
-        //         self.PA = value
-        //         self.PWMA.ChangeDutyCycle(self.PA)
-
-        // def setPWMB(self,value):
-        //         self.PB = value
-        //         self.PWMB.ChangeDutyCycle(self.PB)
-
-        // def setMotor(self, left, right):
-        //         if((right >= 0) and (right <= 100)):
-        //                 GPIO.output(self.AIN1,GPIO.HIGH)
-        //                 GPIO.output(self.AIN2,GPIO.LOW)
-        //                 self.PWMA.ChangeDutyCycle(right)
-        //         elif((right < 0) and (right >= -100)):
-        //                 GPIO.output(self.AIN1,GPIO.LOW)
-        //                 GPIO.output(self.AIN2,GPIO.HIGH)
-        //                 self.PWMA.ChangeDutyCycle(0 - right)
-        //         if((left >= 0) and (left <= 100)):
-        //                 GPIO.output(self.BIN1,GPIO.HIGH)
-        //                 GPIO.output(self.BIN2,GPIO.LOW)
-        //                 self.PWMB.ChangeDutyCycle(left)
-        //         elif((left < 0) and (left >= -100)):
-        //                 GPIO.output(self.BIN1,GPIO.LOW)
-        //                 GPIO.output(self.BIN2,GPIO.HIGH)
-        //                 self.PWMB.ChangeDutyCycle(0 - left)
 };
 
 int main() {
@@ -148,7 +114,13 @@ int main() {
         std::cout << "exited with error code 1";
         return 1;
     }
+
+    alphabot.setSpeed(70);
+    alphabot.forward();
+    gpioDelay(2000000);
+    alphabot.left();
+    gpioDelay(2000000);
     alphabot.stop();
-    bcm2835_close();
+    gpioTerminate();
     return 0;
 }

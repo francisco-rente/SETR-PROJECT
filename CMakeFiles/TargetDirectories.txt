@@ -1,5 +1,0 @@
-/home/pi/SETR-PROJECT/CMakeFiles/rebuild_cache.dir
-/home/pi/SETR-PROJECT/CMakeFiles/edit_cache.dir
-/home/pi/SETR-PROJECT/src/CMakeFiles/rebuild_cache.dir
-/home/pi/SETR-PROJECT/src/CMakeFiles/edit_cache.dir
-/home/pi/SETR-PROJECT/src/CMakeFiles/main.dir

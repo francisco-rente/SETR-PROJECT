@@ -166,12 +166,22 @@ class Alphabot {
         }
 };
 
-
-
+timespec diff(timespec start, timespec end)
+{
+    timespec temp;
+    if ((end.tv_nsec-start.tv_nsec)<0) {
+        temp.tv_sec = end.tv_sec-start.tv_sec-1;
+        temp.tv_nsec = 1000000000+end.tv_nsec-start.tv_nsec;
+    } else {
+        temp.tv_sec = end.tv_sec-start.tv_sec;
+        temp.tv_nsec = end.tv_nsec-start.tv_nsec;
+    }
+    return temp;
+}
 
 // ---------------------------------------------------------------
 
-#define MOVEMENT_SPEED 20
+#define MOVEMENT_SPEED 17
 
 struct task_params {
     int runtime;
@@ -271,6 +281,11 @@ void camera_task() {
 
     int x = 100;
     while (!done) {
+        timespec time1, time2;
+        int temp;
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+
+
         std::cout << "camera" << std::endl;
         angle = -1;
         inputVideo.grab();
@@ -285,7 +300,7 @@ void camera_task() {
 
         // If at least one marker detected
         if (ids.size() > 0) {
-            cv::aruco::drawDetectedMarkers(image, corners, ids);
+            // cv::aruco::drawDetectedMarkers(image, corners, ids);
             
             // Print corners of each marker
             for (int i = 0; i < corners.size(); i++) {
@@ -312,17 +327,18 @@ void camera_task() {
             float middlePoint = (marker0Center.x + marker1Center.x) / 2;
 
             // draw vertical line with middle point
-            cv::line(image, cv::Point(middlePoint, 0), cv::Point(middlePoint, 480), cv::Scalar(0, 0, 255), 2);
+            // cv::line(image, cv::Point(middlePoint, 0), cv::Point(middlePoint, 480), cv::Scalar(0, 0, 255), 2);
 
             angle = middlePoint;
             std::cout << "Camera has detected the markers" << std::endl;
         }
-        imshow("Display window", image);
-        char key = (char) cv::waitKey(1);
-        if (key == 27)
-            break;
+        // imshow("Display window", image);
+        // char key = (char) cv::waitKey(1);
+        // if (key == 27)
+        //     break;
 
-        std::cout << "Yielding" << std::endl;
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+        std::cout<<"camera:"<<diff(time1,time2).tv_sec<<":"<<diff(time1,time2).tv_nsec<<std::endl;
         sched_yield();
     }
 }
@@ -412,7 +428,6 @@ void motor_task() {
         return;
     }
 
-    int x = 300;
     while (!done) {
         std::cout << "motor" << std::endl;
         pthread_mutex_lock(&movement_mutex);
@@ -488,7 +503,7 @@ int main (int argc, char **argv)
 
     // Camera 
     pthread_t thread2;                                      
-    struct task_params *params2 = get_task_params((int) 11.1*ms, (int) 11.1*ms , (int) 11.1*ms, camera_task);
+    struct task_params *params2 = get_task_params((int) 40*ms, (int) 40*ms , (int) 40*ms, camera_task);
     pthread_create(&thread2, NULL, run_deadline, (void *) params2);
 
     // Coordinator

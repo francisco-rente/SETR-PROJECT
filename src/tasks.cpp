@@ -142,8 +142,8 @@ class Alphabot {
         }
 
         int left() {
-            gpioPWM(this->ENA, 30);
-            gpioPWM(this->ENB, 30);
+            gpioPWM(this->ENA, this->speed);
+            gpioPWM(this->ENB, this->speed);
             gpioWrite(this->AIN1, HIGH);
             gpioWrite(this->AIN2, LOW); 
             gpioWrite(this->BIN1, LOW);
@@ -152,8 +152,8 @@ class Alphabot {
         }
 
         int right() {
-            gpioPWM(this->ENA, 30);
-            gpioPWM(this->ENB, 30);
+            gpioPWM(this->ENA, this->speed);
+            gpioPWM(this->ENB, this->speed);
             gpioWrite(this->AIN1, LOW);
             gpioWrite(this->AIN2, HIGH); 
             gpioWrite(this->BIN1, HIGH);
@@ -170,6 +170,8 @@ class Alphabot {
 
 
 // ---------------------------------------------------------------
+
+#define MOVEMENT_SPEED 20
 
 struct task_params {
     int runtime;
@@ -213,7 +215,7 @@ void *run_deadline(void *parameters) {
 }
 
 static volatile bool near_object;
-static volatile float angle;
+static volatile float angle = -1;
 
 enum direction {
     LEFT,
@@ -238,8 +240,7 @@ void proximity_task() {
 
     int x = 0;
     while (!done) {
-        near_object = gpioRead(DR) || gpioRead(DL);
-        std::cout << "Near object: " << near_object << std::endl;
+        near_object = 1-  (gpioRead(DR) && gpioRead(DL));
         sched_yield();
     }
 }
@@ -270,10 +271,10 @@ void camera_task() {
 
     int x = 100;
     while (!done) {
+        std::cout << "camera" << std::endl;
+        angle = -1;
         inputVideo.grab();
         inputVideo >> image;
-
-        std::cout << "Frame: " << x++ << std::endl;
 
         std::vector<int> ids;
         std::vector<std::vector<cv::Point2f>> corners;
@@ -309,18 +310,19 @@ void camera_task() {
 
             // Calculate middle point between markers
             float middlePoint = (marker0Center.x + marker1Center.x) / 2;
-            std::cout << "Middle point: " << middlePoint << "\n";
 
             // draw vertical line with middle point
             cv::line(image, cv::Point(middlePoint, 0), cv::Point(middlePoint, 480), cv::Scalar(0, 0, 255), 2);
 
             angle = middlePoint;
+            std::cout << "Camera has detected the markers" << std::endl;
         }
         imshow("Display window", image);
         char key = (char) cv::waitKey(1);
         if (key == 27)
             break;
 
+        std::cout << "Yielding" << std::endl;
         sched_yield();
     }
 }
@@ -332,43 +334,73 @@ enum CoordinatorState {
 };
 
 void coordinator_task() {
-    int x = 200;
+    int counter = 0;
     
 
     enum CoordinatorState state = ROTATING_STATE;
 
     while (!done) {
-        if(near_object) {
-            state = STOP_STATE;
+        std::cout << "coordinator" << std::endl;
+        //std::cout << state  << ", near_object:" << near_object  << ", angle:" << angle << std::endl;
+
+        // if(near_object) {
+        //     //state = STOP_STATE;
+        //     pthread_mutex_lock(&movement_mutex);
+        //     movement.direction = STOP;
+        //     movement.speed = 0;
+        //     pthread_mutex_unlock(&movement_mutex);
+        // }
+        // else {
+            
+        // }
+        if(state == ROTATING_STATE) {
+                if (angle < 0) {
+                    pthread_mutex_lock(&movement_mutex);
+                    movement.direction = RIGHT;
+                    movement.speed = MOVEMENT_SPEED;
+                    pthread_mutex_unlock(&movement_mutex);
+                } else {
+                    state = MOVING_FORWARD_STATE;
+                    counter = 300;
+                    //std::cout << "Found markers, stopping" << std::endl;
+                }
+                // else if(angle >= 315 && angle <= 325) {
+                //     state = MOVING_FORWARD_STATE;
+                // } else {                    
+                //     pthread_mutex_lock(&movement_mutex);
+                //     movement.direction = angle <= 320 ? LEFT : RIGHT;
+                //     movement.speed = 30;
+                //     pthread_mutex_unlock(&movement_mutex);
+                // }
+        }
+        if(state == MOVING_FORWARD_STATE) {
+            if(counter > 0) {
+                pthread_mutex_lock(&movement_mutex);
+                movement.direction = FORWARD;
+                movement.speed = MOVEMENT_SPEED;
+                pthread_mutex_unlock(&movement_mutex);    
+            } else {
+                pthread_mutex_lock(&movement_mutex);
+                movement.direction = STOP;
+                movement.speed = 0;
+                pthread_mutex_unlock(&movement_mutex);
+
+                if (angle < 0) {
+                    state = ROTATING_STATE;
+                } else {
+                    counter = 300;
+                }
+            }
+            counter--;
+            
+        }
+        if(state == STOP_STATE) {
             pthread_mutex_lock(&movement_mutex);
             movement.direction = STOP;
             movement.speed = 0;
             pthread_mutex_unlock(&movement_mutex);
         }
-        else {
-            if(state == ROTATING_STATE) {
-                if (angle < 0) {
-                    pthread_mutex_lock(&movement_mutex);
-                    movement.direction = RIGHT;
-                    movement.speed = 15;
-                    pthread_mutex_unlock(&movement_mutex);
-                }
-                else if(angle >= 315 && angle <= 325) {
-                    state = MOVING_FORWARD_STATE;
-                } else {                    
-                    pthread_mutex_lock(&movement_mutex);
-                    movement.direction = angle <= 320 ? LEFT : RIGHT;
-                    movement.speed = 30;
-                    pthread_mutex_unlock(&movement_mutex);
-                }
-            }
-            if(state == MOVING_FORWARD_STATE) {
-                pthread_mutex_lock(&movement_mutex);
-                movement.direction = FORWARD;
-                movement.speed = 15;
-                pthread_mutex_unlock(&movement_mutex);
-            }
-        }
+        std::cout << "coordinator yield" << std::endl;
         sched_yield();
     }
 }
@@ -382,28 +414,32 @@ void motor_task() {
 
     int x = 300;
     while (!done) {
+        std::cout << "motor" << std::endl;
         pthread_mutex_lock(&movement_mutex);
         
         alphabot.setSpeed(movement.speed);
 
+        //std::cout << "moving in " << movement.direction << " with speed=" << movement.speed << std::endl;
+
         switch (movement.direction) {
             case FORWARD:
-                // alphabot.forward();
+                alphabot.forward();
                 break;
             case BACKWARD:
-                // alphabot.backward();
+                alphabot.backward();
                 break;
             case LEFT:
-                // alphabot.left();
+                alphabot.left();
                 break;
             case RIGHT:
-                // alphabot.right();
+                alphabot.right();
                 break;
             case STOP:
-                // alphabot.stop();
+                alphabot.stop();
                 break;
         }
-        gpioDelay(2000000);
+        // int ms = 1000;
+        // gpioDelay(5 * 1000);
     
         pthread_mutex_unlock(&movement_mutex);
         sched_yield();
@@ -419,6 +455,7 @@ task_params* get_task_params(int runtime, int period, int deadline, void (*funct
     return params;
 }
 
+
 int main (int argc, char **argv)
 {
 
@@ -428,14 +465,16 @@ int main (int argc, char **argv)
     }
     
     inputVideo.open(0);
+    // 1296x730
     inputVideo.set(cv::CAP_PROP_FRAME_WIDTH, 640);
     inputVideo.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
-    inputVideo.set(cv::CAP_PROP_FPS, 60);
+    inputVideo.set(cv::CAP_PROP_FPS, 90);
 
     printf("main thread [%ld]\n", gettid());
 
-    int runtime = 10 * 1000 * 1000;
-    int period = 30 * 1000 * 1000 * 10;
+    int ms = 1000000;
+    int runtime = 8 * ms;
+    int period = 8 * ms;
 
     pthread_mutexattr_t movement_mutex_attr;
     pthread_mutexattr_setprotocol(&movement_mutex_attr, PTHREAD_PRIO_INHERIT);
@@ -443,13 +482,13 @@ int main (int argc, char **argv)
     pthread_mutex_init(&movement_mutex, &movement_mutex_attr);
 
     // Distance detection
-    pthread_t thread1;
-    struct task_params *params1 = get_task_params(runtime, period, period, proximity_task);
-    pthread_create(&thread1, NULL, run_deadline, (void *) params1);
+    // pthread_t thread1;
+    // struct task_params *params1 = get_task_params(runtime, period, period, proximity_task);
+    // pthread_create(&thread1, NULL, run_deadline, (void *) params1);
 
     // Camera 
-    pthread_t thread2;
-    struct task_params *params2 = get_task_params(10000000, 16700000 , 16700000, camera_task);
+    pthread_t thread2;                                      
+    struct task_params *params2 = get_task_params((int) 11.1*ms, (int) 11.1*ms , (int) 11.1*ms, camera_task);
     pthread_create(&thread2, NULL, run_deadline, (void *) params2);
 
     // Coordinator
@@ -463,28 +502,28 @@ int main (int argc, char **argv)
     pthread_create(&thread4, NULL, run_deadline, (void *) params4);
 
 
-    sleep(10);
+    sleep(50);
 
     done = 1;
 
 
-    pthread_join(thread1, NULL);
-    std::cout << "Joined 1" << std::endl;
+    // pthread_join(thread1, NULL);
+    //std::cout << "Joined 1" << std::endl;
 
     pthread_join(thread2, NULL);
-    std::cout << "Joined 2" << std::endl;
+    //std::cout << "Joined 2" << std::endl;
 
     pthread_join(thread3, NULL);
-    std::cout << "Joined 3" << std::endl;
+    //std::cout << "Joined 3" << std::endl;
     
     pthread_join(thread4, NULL);
-    std::cout << "Joined 4" << std::endl;
+    //std::cout << "Joined 4" << std::endl;
 
     pthread_mutexattr_destroy(&movement_mutex_attr);
-    std::cout << "Destroyed mutex attr" << std::endl;
+    //std::cout << "Destroyed mutex attr" << std::endl;
 
     pthread_mutex_destroy(&movement_mutex);
-    std::cout << "Destroyed mutex" << std::endl;
+    //std::cout << "Destroyed mutex" << std::endl;
 
     gpioTerminate();
 

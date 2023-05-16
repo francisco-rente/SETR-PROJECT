@@ -106,6 +106,10 @@ class Alphabot {
             gpioWrite(this->BIN2, LOW);
             return 0;
         }
+
+        ~Alphabot(){
+            this->stop();
+        }
 };
 
 int main() {

@@ -225,7 +225,7 @@ void *run_deadline(void *parameters) {
 }
 
 static volatile bool near_object;
-static volatile int marker_id = -1;
+static volatile float angle = -1;
 
 enum direction {
     LEFT,
@@ -287,7 +287,7 @@ void camera_task() {
 
 
         std::cout << "camera" << std::endl;
-        marker_id = -1;
+        angle = angle >= 0 ? -1 : angle;
         inputVideo.grab();
         inputVideo >> image;
 
@@ -295,19 +295,49 @@ void camera_task() {
         std::vector<std::vector<cv::Point2f>> corners;
         cv::aruco::detectMarkers(image, dictionary, corners, ids, detectorParams);
 
+        int marker0Index = -1;
+        int marker1Index = -1;
+
         // If at least one marker detected
         if (ids.size() > 0) {
             cv::aruco::drawDetectedMarkers(image, corners, ids);
             
-            int minimum_id = 999999;
-            for(int i = 0; i < ids.size(); ++i) {
-                if(ids[i] < minimum_id) {
-                    minimum_id = ids[i];
+            // Print corners of each marker
+            for (int i = 0; i < corners.size(); i++) {
+                if(ids[i] <= 1){
+                    if(ids[i] == 0){
+                        marker0Index = i;
+                    }
+                    else{
+                        marker1Index = i;
+                    }
                 }
+                
             }
-            marker_id = minimum_id;
         }
         
+        // If both markers detected
+        if(marker0Index != -1 && marker1Index != -1){
+            // Calculate center point of each marker
+            cv::Point2f marker0Center = (corners[marker0Index][0] + corners[marker0Index][1] + corners[marker0Index][2] + corners[marker0Index][3]) / 4;
+            cv::Point2f marker1Center = (corners[marker1Index][0] + corners[marker1Index][1] + corners[marker1Index][2] + corners[marker1Index][3]) / 4;
+            
+
+            // Calculate middle point between markers
+            float middlePoint = (marker0Center.x + marker1Center.x) / 2;
+
+            // draw vertical line with middle point
+            cv::line(image, cv::Point(middlePoint, 0), cv::Point(middlePoint, 480), cv::Scalar(0, 0, 255), 2);
+
+            angle = middlePoint;
+            std::cout << "Camera has detected the markers" << std::endl;
+        } else {
+            if(marker0Index != -1){
+                angle = -1;
+            } else if(marker1Index != -1 ) {
+                angle = -2;
+            }
+        }
         imshow("Display window", image);
         char key = (char) cv::waitKey(1);
         if (key == 27)
@@ -327,42 +357,71 @@ enum CoordinatorState {
 
 void coordinator_task() {
     int counter = 0;
-    int current_instruction = -1;
+    
 
     enum CoordinatorState state = ROTATING_STATE;
 
     while (!done) {
-        std::cout << "coordinator, current_instruction="  << current_instruction << ", counter=" << counter << std::endl;
-        
-        if(current_instruction == -1 && marker_id >= 0 && marker_id <= 1) {
-            current_instruction = marker_id;
-            counter = 300;
-        }
+        std::cout << "coordinator" << std::endl;
+        //std::cout << state  << ", near_object:" << near_object  << ", angle:" << angle << std::endl;
 
-        if(current_instruction == 0) {
-            pthread_mutex_lock(&movement_mutex);
-            movement.direction = FORWARD;
-            movement.speed = MOVEMENT_SPEED;
-            pthread_mutex_unlock(&movement_mutex);
-            counter--;
+        // if(near_object) {
+        //     //state = STOP_STATE;
+        //     pthread_mutex_lock(&movement_mutex);
+        //     movement.direction = STOP;
+        //     movement.speed = 0;
+        //     pthread_mutex_unlock(&movement_mutex);
+        // }
+        // else {
+            
+        // }
+        if(state == ROTATING_STATE) {
+                if (angle < 0) {
+                    pthread_mutex_lock(&movement_mutex);
+                    movement.direction = angle == -1 ? RIGHT : LEFT;
+                    movement.speed = MOVEMENT_SPEED;
+                    pthread_mutex_unlock(&movement_mutex);
+                } else {
+                    state = MOVING_FORWARD_STATE;
+                    counter = 300;
+                    //std::cout << "Found markers, stopping" << std::endl;
+                }
+                // else if(angle >= 315 && angle <= 325) {
+                //     state = MOVING_FORWARD_STATE;
+                // } else {                    
+                //     pthread_mutex_lock(&movement_mutex);
+                //     movement.direction = angle <= 320 ? LEFT : RIGHT;
+                //     movement.speed = 30;
+                //     pthread_mutex_unlock(&movement_mutex);
+                // }
         }
-        if(current_instruction == 1) {
-            pthread_mutex_lock(&movement_mutex);
-            movement.direction = BACKWARD;
-            movement.speed = MOVEMENT_SPEED;
-            pthread_mutex_unlock(&movement_mutex);
-            counter--;
-        }
+        if(state == MOVING_FORWARD_STATE) {
+            if(counter > 0) {
+                pthread_mutex_lock(&movement_mutex);
+                movement.direction = FORWARD;
+                movement.speed = MOVEMENT_SPEED;
+                pthread_mutex_unlock(&movement_mutex);    
+            } else {
+                pthread_mutex_lock(&movement_mutex);
+                movement.direction = STOP;
+                movement.speed = 0;
+                pthread_mutex_unlock(&movement_mutex);
 
-        if(counter <= 0) {
-            counter = -1;
-            current_instruction = -1;
+                if (angle < 0) {
+                    state = ROTATING_STATE;
+                } else {
+                    counter = 300;
+                }
+            }
+            counter--;
+            
+        }
+        if(state == STOP_STATE) {
             pthread_mutex_lock(&movement_mutex);
             movement.direction = STOP;
             movement.speed = 0;
             pthread_mutex_unlock(&movement_mutex);
         }
-
         std::cout << "coordinator yield" << std::endl;
         sched_yield();
     }

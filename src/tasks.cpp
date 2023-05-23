@@ -228,6 +228,7 @@ void *run_deadline(void *parameters) {
 
 static volatile bool near_object;
 static volatile int marker_id = -1;
+static volatile int center_distance = 0;
 
 enum direction {
     LEFT,
@@ -307,10 +308,21 @@ void camera_task() {
             cv::aruco::drawDetectedMarkers(image, corners, ids);
             
             int minimum_id = 999999;
+            int minimum_id_idx = 0;
             for(int i = 0; i < ids.size(); ++i) {
                 if(ids[i] < minimum_id) {
                     minimum_id = ids[i];
+                    minimum_id_idx = i;
                 }
+            }
+
+            std::cout << "minimum_id: " << minimum_id << std::endl;
+            if(minimum_id == 6) {
+                // Calculate center point of each marker
+                cv::Point2f markerCenter = (corners[minimum_id_idx][0] + corners[minimum_id_idx][1] + corners[minimum_id_idx][2] + corners[minimum_id_idx][3]) / 4;
+                center_distance = markerCenter.x - 320;
+                std::cout << "Move: " << markerCenter.x - 320 << "\n";
+
             }
             marker_id = minimum_id;
         }
@@ -368,6 +380,10 @@ void coordinator_task() {
                 current_instruction = marker_id;
                 counter = 1000;
             }
+            if((current_instruction == -1 || current_instruction == 6) && marker_id == 6) {
+                current_instruction = marker_id;
+                counter = 200;
+            }
 
             if(current_instruction == 0) {
                 move(FORWARD, MOVEMENT_SPEED);
@@ -386,6 +402,17 @@ void coordinator_task() {
             }
             if(current_instruction == 5) {
                 unbalanced_move(BACKWARD, 20, 50);
+            }
+            if(current_instruction == 6) {
+                std::cout << center_distance << std::endl;
+                if(center_distance < -10) {
+                    unbalanced_move(FORWARD, 30, 40);
+                }
+                else if(center_distance > 10) {
+                    unbalanced_move(FORWARD, 30, 25);
+                } else {
+                    move(FORWARD, MOVEMENT_SPEED);
+                }
             }
 
             if(counter <= 0) {
@@ -510,7 +537,7 @@ int main (int argc, char **argv)
     pthread_create(&thread4, NULL, run_deadline, (void *) params4);
 
 
-    sleep(50);
+    sleep(20);
 
     done = 1;
 

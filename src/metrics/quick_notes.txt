@@ -1,0 +1,4 @@
+proximity: 96334 ns
+camera: 40982055 ns
+coordinator: 190204 ns
+motor: 156852 ns

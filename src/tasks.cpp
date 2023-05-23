@@ -253,7 +253,14 @@ void proximity_task() {
 
     int x = 0;
     while (!done) {
+        // timespec time1, time2;
+        // int temp;
+        // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+
         near_object = 1-(gpioRead(DR) && gpioRead(DL));
+
+        // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+        // std::cout<<diff(time1,time2).tv_sec<<","<<diff(time1,time2).tv_nsec<<std::endl;
         sched_yield();
     }
 }
@@ -282,14 +289,11 @@ void camera_task() {
 
     std::cout << "Starting camera loop" << std::endl;
 
-    int x = 100;
     while (!done) {
-        timespec time1, time2;
-        int temp;
-        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+        // timespec time1, time2;
+        // int temp;
+        // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
 
-
-        std::cout << "camera" << std::endl;
         marker_id = -1;
         inputVideo.grab();
         inputVideo >> image;
@@ -311,13 +315,13 @@ void camera_task() {
             marker_id = minimum_id;
         }
         
-        imshow("Display window", image);
-        char key = (char) cv::waitKey(1);
-        if (key == 27)
-            break;
+        // imshow("Display window", image);
+        // char key = (char) cv::waitKey(1);
+        // if (key == 27)
+        //     break;
 
-        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
-        std::cout<<"camera:"<<diff(time1,time2).tv_sec<<":"<<diff(time1,time2).tv_nsec<<std::endl;
+        // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+        // std::cout<<diff(time1,time2).tv_sec<<","<<diff(time1,time2).tv_nsec<<std::endl;
         sched_yield();
     }
 }
@@ -351,14 +355,18 @@ void coordinator_task() {
     enum CoordinatorState state = ROTATING_STATE;
 
     while (!done) {
-        std::cout << "coordinator, current_instruction="  << current_instruction << ", counter=" << counter << std::endl;
+        // std::cout << "coordinator, current_instruction="  << current_instruction << ", counter=" << counter << std::endl;
         
+        // timespec time1, time2;
+        // int temp;
+        // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+
         if(near_object == 1) {
             move(STOP, 0);
         } else {
             if(current_instruction == -1 && marker_id >= 0 && marker_id <= 5) {
                 current_instruction = marker_id;
-                counter = 300;
+                counter = 1000;
             }
 
             if(current_instruction == 0) {
@@ -388,12 +396,16 @@ void coordinator_task() {
         }
         counter--;
 
-        std::cout << "coordinator yield" << std::endl;
+        // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+        // std::cout<<diff(time1,time2).tv_sec<<","<<diff(time1,time2).tv_nsec<<std::endl;
+
+        // std::cout << "coordinator yield" << std::endl;
         sched_yield();
     }
 }
 
 void motor_task() {
+   
     Alphabot alphabot = Alphabot();
     if(alphabot.init()) {
         std::cout << "exited with error code 1";
@@ -401,10 +413,16 @@ void motor_task() {
     }
 
     while (!done) {
-        std::cout << "motor" << std::endl;
+
+        // timespec time1, time2;
+        // int temp;
+        // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+
+
+        // std::cout << "motor" << std::endl;
         pthread_mutex_lock(&movement_mutex);
         
-        std::cout << movement.speed_left  << "," << movement.speed_right << std::endl;
+        // std::cout << movement.speed_left  << "," << movement.speed_right << std::endl;
         alphabot.setSpeed(movement.speed_left, movement.speed_right);
 
         //std::cout << "moving in " << movement.direction << " with speed=" << movement.speed << std::endl;
@@ -430,6 +448,10 @@ void motor_task() {
         // gpioDelay(5 * 1000);
     
         pthread_mutex_unlock(&movement_mutex);
+
+
+        // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+        // std::cout<<diff(time1,time2).tv_sec<<","<<diff(time1,time2).tv_nsec<<std::endl;
         sched_yield();
     }
 }
@@ -460,8 +482,7 @@ int main (int argc, char **argv)
     printf("main thread [%ld]\n", gettid());
 
     int ms = 1000000;
-    int runtime = 8 * ms;
-    int period = 8 * ms;
+    int us = 1000;
 
     pthread_mutexattr_t movement_mutex_attr;
     pthread_mutexattr_setprotocol(&movement_mutex_attr, PTHREAD_PRIO_INHERIT);
@@ -470,22 +491,22 @@ int main (int argc, char **argv)
 
     // Distance detection
     pthread_t thread1;
-    struct task_params *params1 = get_task_params((int) 1*ms, period, period, proximity_task);
+    struct task_params *params1 = get_task_params(150*us, 2 * ms, 2 * ms, proximity_task);
     pthread_create(&thread1, NULL, run_deadline, (void *) params1);
 
     // Camera 
     pthread_t thread2;                                      
-    struct task_params *params2 = get_task_params((int) 40*ms, (int) 40*ms , (int) 40*ms, camera_task);
+    struct task_params *params2 = get_task_params((int) 45*ms, (int) 50*ms , (int) 50*ms, camera_task);
     pthread_create(&thread2, NULL, run_deadline, (void *) params2);
 
     // Coordinator
     pthread_t thread3;
-    struct task_params *params3 = get_task_params(runtime, period, period, coordinator_task);
+    struct task_params *params3 = get_task_params(150*us, 2 * ms, 2 * ms, coordinator_task);
     pthread_create(&thread3, NULL, run_deadline, (void *) params3);
 
     // Motor control
     pthread_t thread4;
-    struct task_params *params4 = get_task_params(runtime, period, period, motor_task);
+    struct task_params *params4 = get_task_params(150*us, 2 * ms, 2 * ms, motor_task);
     pthread_create(&thread4, NULL, run_deadline, (void *) params4);
 
 

@@ -75,7 +75,8 @@ class Alphabot {
         int BIN2;
         int ENA;
         int ENB;
-        int speed;
+        int speed_left;
+        int speed_right;
 
     public:
         Alphabot() {
@@ -85,7 +86,8 @@ class Alphabot {
             this->BIN1 = 20;
             this->BIN2 = 21;
             this->ENB = 26;
-            this->speed = 10;
+            this->speed_left = 10;
+            this->speed_right = 10;
         }
 
         int init(){
@@ -106,9 +108,9 @@ class Alphabot {
             return 0;
         }
 
-        int setSpeed(int speed) {
-            this->speed = speed;
-            return 0;
+        int setSpeed(int speed_left, int speed_right) {
+            this->speed_left = speed_left;
+            this->speed_right = speed_right;
         }
 
         int stop() {
@@ -122,8 +124,8 @@ class Alphabot {
         }
 
         int forward() {
-            gpioPWM(this->ENA, this->speed);
-            gpioPWM(this->ENB, this->speed);
+            gpioPWM(this->ENA, this->speed_left);
+            gpioPWM(this->ENB, this->speed_right);
             gpioWrite(this->AIN1, LOW);
             gpioWrite(this->AIN2, HIGH); 
             gpioWrite(this->BIN1, LOW);
@@ -132,8 +134,8 @@ class Alphabot {
         }
 
         int backward() {
-            gpioPWM(this->ENA, this->speed);
-            gpioPWM(this->ENB, this->speed);
+            gpioPWM(this->ENA, this->speed_left);
+            gpioPWM(this->ENB, this->speed_right);
             gpioWrite(this->AIN1, HIGH);
             gpioWrite(this->AIN2, LOW); 
             gpioWrite(this->BIN1, HIGH);
@@ -142,8 +144,8 @@ class Alphabot {
         }
 
         int left() {
-            gpioPWM(this->ENA, this->speed);
-            gpioPWM(this->ENB, this->speed);
+            gpioPWM(this->ENA, this->speed_left);
+            gpioPWM(this->ENB, this->speed_right);
             gpioWrite(this->AIN1, HIGH);
             gpioWrite(this->AIN2, LOW); 
             gpioWrite(this->BIN1, LOW);
@@ -152,8 +154,8 @@ class Alphabot {
         }
 
         int right() {
-            gpioPWM(this->ENA, this->speed);
-            gpioPWM(this->ENB, this->speed);
+            gpioPWM(this->ENA, this->speed_left);
+            gpioPWM(this->ENB, this->speed_right);
             gpioWrite(this->AIN1, LOW);
             gpioWrite(this->AIN2, HIGH); 
             gpioWrite(this->BIN1, HIGH);
@@ -181,7 +183,7 @@ timespec diff(timespec start, timespec end)
 
 // ---------------------------------------------------------------
 
-#define MOVEMENT_SPEED 17
+#define MOVEMENT_SPEED 20
 
 struct task_params {
     int runtime;
@@ -237,7 +239,8 @@ enum direction {
 
 struct movement_params {
     enum direction direction;
-    int speed;
+    int speed_left;
+    int speed_right;
 };
 
 static volatile movement_params movement;
@@ -250,7 +253,7 @@ void proximity_task() {
 
     int x = 0;
     while (!done) {
-        near_object = 1-  (gpioRead(DR) && gpioRead(DL));
+        near_object = 1-(gpioRead(DR) && gpioRead(DL));
         sched_yield();
     }
 }
@@ -325,6 +328,22 @@ enum CoordinatorState {
     STOP_STATE,
 };
 
+void move(direction dir, int speed) {
+    pthread_mutex_lock(&movement_mutex);
+    movement.direction = dir;
+    movement.speed_left = speed;
+    movement.speed_right = speed;
+    pthread_mutex_unlock(&movement_mutex);
+}
+
+void unbalanced_move(direction dir, int speed_left, int speed_right) {
+    pthread_mutex_lock(&movement_mutex);
+    movement.direction = dir;
+    movement.speed_left = speed_left;
+    movement.speed_right = speed_right;
+    pthread_mutex_unlock(&movement_mutex);
+}
+
 void coordinator_task() {
     int counter = 0;
     int current_instruction = -1;
@@ -334,34 +353,40 @@ void coordinator_task() {
     while (!done) {
         std::cout << "coordinator, current_instruction="  << current_instruction << ", counter=" << counter << std::endl;
         
-        if(current_instruction == -1 && marker_id >= 0 && marker_id <= 1) {
-            current_instruction = marker_id;
-            counter = 300;
-        }
+        if(near_object == 1) {
+            move(STOP, 0);
+        } else {
+            if(current_instruction == -1 && marker_id >= 0 && marker_id <= 5) {
+                current_instruction = marker_id;
+                counter = 300;
+            }
 
-        if(current_instruction == 0) {
-            pthread_mutex_lock(&movement_mutex);
-            movement.direction = FORWARD;
-            movement.speed = MOVEMENT_SPEED;
-            pthread_mutex_unlock(&movement_mutex);
-            counter--;
-        }
-        if(current_instruction == 1) {
-            pthread_mutex_lock(&movement_mutex);
-            movement.direction = BACKWARD;
-            movement.speed = MOVEMENT_SPEED;
-            pthread_mutex_unlock(&movement_mutex);
-            counter--;
-        }
+            if(current_instruction == 0) {
+                move(FORWARD, MOVEMENT_SPEED);
+            }
+            if(current_instruction == 1) {
+                move(BACKWARD, MOVEMENT_SPEED);
+            }
+            if(current_instruction == 2) {
+                move(LEFT, MOVEMENT_SPEED);
+            }
+            if(current_instruction == 3) {
+                move(RIGHT, MOVEMENT_SPEED);
+            }
+            if(current_instruction == 4) {
+                unbalanced_move(FORWARD, 20, 50);
+            }
+            if(current_instruction == 5) {
+                unbalanced_move(BACKWARD, 20, 50);
+            }
 
-        if(counter <= 0) {
-            counter = -1;
-            current_instruction = -1;
-            pthread_mutex_lock(&movement_mutex);
-            movement.direction = STOP;
-            movement.speed = 0;
-            pthread_mutex_unlock(&movement_mutex);
+            if(counter <= 0) {
+                counter = -1;
+                current_instruction = -1;
+                move(STOP, 0);
+            }
         }
+        counter--;
 
         std::cout << "coordinator yield" << std::endl;
         sched_yield();
@@ -379,7 +404,8 @@ void motor_task() {
         std::cout << "motor" << std::endl;
         pthread_mutex_lock(&movement_mutex);
         
-        alphabot.setSpeed(movement.speed);
+        std::cout << movement.speed_left  << "," << movement.speed_right << std::endl;
+        alphabot.setSpeed(movement.speed_left, movement.speed_right);
 
         //std::cout << "moving in " << movement.direction << " with speed=" << movement.speed << std::endl;
 
@@ -427,7 +453,6 @@ int main (int argc, char **argv)
     }
     
     inputVideo.open(0);
-    // 1296x730
     inputVideo.set(cv::CAP_PROP_FRAME_WIDTH, 640);
     inputVideo.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
     inputVideo.set(cv::CAP_PROP_FPS, 90);
@@ -444,9 +469,9 @@ int main (int argc, char **argv)
     pthread_mutex_init(&movement_mutex, &movement_mutex_attr);
 
     // Distance detection
-    // pthread_t thread1;
-    // struct task_params *params1 = get_task_params(runtime, period, period, proximity_task);
-    // pthread_create(&thread1, NULL, run_deadline, (void *) params1);
+    pthread_t thread1;
+    struct task_params *params1 = get_task_params((int) 1*ms, period, period, proximity_task);
+    pthread_create(&thread1, NULL, run_deadline, (void *) params1);
 
     // Camera 
     pthread_t thread2;                                      
@@ -469,8 +494,8 @@ int main (int argc, char **argv)
     done = 1;
 
 
-    // pthread_join(thread1, NULL);
-    //std::cout << "Joined 1" << std::endl;
+    pthread_join(thread1, NULL);
+    // std::cout << "Joined 1" << std::endl;
 
     pthread_join(thread2, NULL);
     //std::cout << "Joined 2" << std::endl;

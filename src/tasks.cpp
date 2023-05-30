@@ -183,7 +183,7 @@ timespec diff(timespec start, timespec end)
 
 // ---------------------------------------------------------------
 
-#define MOVEMENT_SPEED 20
+#define MOVEMENT_SPEED 30
 
 struct task_params {
     int runtime;
@@ -308,29 +308,39 @@ void camera_task() {
             cv::aruco::drawDetectedMarkers(image, corners, ids);
             
             int minimum_id = 999999;
+            int maximum_area = 0;
             int minimum_id_idx = 0;
+            int correct_center_distance = 0;
+            cv::Point2f markerCenter;
             for(int i = 0; i < ids.size(); ++i) {
-                if(ids[i] < minimum_id) {
+                if(ids[i] <= minimum_id) {
                     minimum_id = ids[i];
                     minimum_id_idx = i;
+                    std::cout << "minimum_id: " << minimum_id << std::endl;
+
+                    if(minimum_id == 6) {
+                        // Calculate center point of each marker
+                        markerCenter = (corners[minimum_id_idx][0] + corners[minimum_id_idx][1] + corners[minimum_id_idx][2] + corners[minimum_id_idx][3]) / 4;
+                        correct_center_distance = markerCenter.x - 320;
+                        // Calculate marker area
+                        int area = cv::contourArea(corners[minimum_id_idx]);
+                        if(area > maximum_area) {
+                            maximum_area = area;
+                            marker_id = minimum_id;
+                        }
+                    }
                 }
             }
-
-            std::cout << "minimum_id: " << minimum_id << std::endl;
             if(minimum_id == 6) {
-                // Calculate center point of each marker
-                cv::Point2f markerCenter = (corners[minimum_id_idx][0] + corners[minimum_id_idx][1] + corners[minimum_id_idx][2] + corners[minimum_id_idx][3]) / 4;
-                center_distance = markerCenter.x - 320;
-                std::cout << "Move: " << markerCenter.x - 320 << "\n";
-
+                center_distance = correct_center_distance;
             }
             marker_id = minimum_id;
         }
         
-        // imshow("Display window", image);
-        // char key = (char) cv::waitKey(1);
-        // if (key == 27)
-        //     break;
+        imshow("Display window", image);
+        char key = (char) cv::waitKey(1);
+        if (key == 27)
+            break;
 
         // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
         // std::cout<<diff(time1,time2).tv_sec<<","<<diff(time1,time2).tv_nsec<<std::endl;
@@ -406,10 +416,10 @@ void coordinator_task() {
             if(current_instruction == 6) {
                 std::cout << center_distance << std::endl;
                 if(center_distance < -10) {
-                    unbalanced_move(FORWARD, 30, 40);
+                    unbalanced_move(FORWARD, 30, 35);
                 }
                 else if(center_distance > 10) {
-                    unbalanced_move(FORWARD, 30, 25);
+                    unbalanced_move(FORWARD, 35, 30);
                 } else {
                     move(FORWARD, MOVEMENT_SPEED);
                 }

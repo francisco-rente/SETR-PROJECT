@@ -1,0 +1,1042 @@
+main thread [5216]
+deadline thread started [5228]
+Starting camera loop
+minimum_id: 6
+Move: -196.648
+0,40652832
+minimum_id: 6
+Move: -196.668
+0,25853836
+minimum_id: 6
+Move: -196.609
+0,22146224
+minimum_id: 6
+Move: -196.64
+0,31847502
+minimum_id: 6
+Move: -196.593
+0,32672836
+minimum_id: 6
+Move: -196.606
+0,22005000
+minimum_id: 6
+Move: -196.644
+0,21035703
+minimum_id: 6
+Move: -196.647
+0,21327392
+minimum_id: 6
+Move: -196.613
+0,21779113
+minimum_id: 6
+Move: -196.655
+0,20816872
+minimum_id: 6
+Move: -196.622
+0,21027301
+minimum_id: 6
+Move: -196.609
+0,21087298
+minimum_id: 6
+Move: -196.608
+0,21008316
+minimum_id: 6
+Move: -196.611
+0,22601647
+minimum_id: 6
+Move: -196.643
+0,21484281
+minimum_id: 6
+Move: -196.594
+0,21336201
+minimum_id: 6
+Move: -196.602
+0,22484947
+minimum_id: 6
+Move: -196.543
+0,21795608
+minimum_id: 6
+Move: -196.593
+0,21408039
+minimum_id: 6
+Move: -196.597
+0,21244426
+minimum_id: 6
+Move: -196.661
+0,21175962
+minimum_id: 6
+Move: -196.626
+0,21117388
+minimum_id: 6
+Move: -196.64
+0,21701702
+minimum_id: 6
+Move: -196.587
+0,21937148
+minimum_id: 6
+Move: -196.587
+0,20670535
+minimum_id: 6
+Move: -196.584
+0,21169222
+minimum_id: 6
+Move: -196.606
+0,23814239
+minimum_id: 6
+Move: -196.532
+0,21613356
+minimum_id: 6
+Move: -196.597
+0,22389722
+minimum_id: 6
+Move: -196.647
+0,21803259
+minimum_id: 6
+Move: -196.582
+0,21792963
+minimum_id: 6
+Move: -196.551
+0,21415227
+minimum_id: 6
+Move: -196.589
+0,21163706
+minimum_id: 6
+Move: -196.643
+0,20768537
+minimum_id: 6
+Move: -196.605
+0,21501890
+minimum_id: 6
+Move: -196.624
+0,21350201
+minimum_id: 6
+Move: -196.603
+0,21027095
+minimum_id: 6
+Move: -196.535
+0,21315097
+minimum_id: 6
+Move: -196.565
+0,23604871
+minimum_id: 6
+Move: -196.638
+0,20564683
+minimum_id: 6
+Move: -196.596
+0,22327185
+minimum_id: 6
+Move: -196.584
+0,22136515
+minimum_id: 6
+Move: -196.612
+0,21476701
+minimum_id: 6
+Move: -196.574
+0,23924464
+minimum_id: 6
+Move: -196.636
+0,21417685
+minimum_id: 6
+Move: -196.621
+0,21316280
+minimum_id: 6
+Move: -196.556
+0,21694148
+minimum_id: 6
+Move: -196.549
+0,20601536
+minimum_id: 6
+Move: -196.565
+0,20575092
+minimum_id: 6
+Move: -196.608
+0,21143666
+minimum_id: 6
+Move: -196.553
+0,23532496
+minimum_id: 6
+Move: -196.602
+0,20026275
+minimum_id: 6
+Move: -196.607
+0,20421962
+minimum_id: 6
+Move: -196.602
+0,19882147
+minimum_id: 6
+Move: -196.568
+0,31294222
+minimum_id: 6
+Move: -196.572
+0,24977279
+minimum_id: 6
+Move: -196.554
+0,22008945
+minimum_id: 6
+Move: -199.765
+0,21203646
+minimum_id: 6
+Move: -202.001
+0,22062208
+minimum_id: 6
+Move: -200.059
+0,21932017
+minimum_id: 6
+Move: -191.863
+0,21566428
+minimum_id: 6
+Move: -170.317
+0,22481631
+minimum_id: 6
+Move: -166.103
+0,20728297
+minimum_id: 6
+Move: -164.426
+0,25956000
+minimum_id: 6
+Move: -150.94
+0,21341203
+minimum_id: 6
+Move: -131.321
+0,21262445
+minimum_id: 6
+Move: -119.097
+0,21074315
+minimum_id: 6
+Move: -92.1863
+0,21453704
+minimum_id: 6
+Move: -63.1308
+0,27589389
+minimum_id: 6
+Move: -54.2214
+0,28136498
+minimum_id: 6
+Move: -41.1066
+0,28738724
+minimum_id: 6
+Move: -33.755
+0,20959332
+minimum_id: 6
+Move: -35.2336
+0,21117590
+minimum_id: 6
+Move: -36.1144
+0,21451945
+minimum_id: 6
+Move: -34.6511
+0,21261944
+minimum_id: 6
+Move: -34.6619
+0,21691463
+minimum_id: 6
+Move: -34.577
+0,23489557
+minimum_id: 6
+Move: -34.5862
+0,21596962
+minimum_id: 6
+Move: -34.8694
+0,21244095
+minimum_id: 6
+Move: -37.7066
+0,21035241
+minimum_id: 6
+Move: -39.1311
+0,20737055
+minimum_id: 6
+Move: -39.7
+0,21882925
+minimum_id: 6
+Move: -40.1592
+0,22280222
+minimum_id: 6
+Move: -41.5285
+0,21687498
+minimum_id: 6
+Move: -44.3771
+0,22316146
+minimum_id: 6
+Move: -46.5476
+0,21840741
+minimum_id: 6
+Move: -49.0487
+0,20273424
+minimum_id: 6
+Move: -49.5367
+0,20410223
+minimum_id: 6
+Move: -54.1227
+0,23484833
+minimum_id: 6
+Move: -54.676
+0,22697201
+minimum_id: 6
+Move: -54.675
+0,23296223
+minimum_id: 6
+Move: -54.6927
+0,22289263
+minimum_id: 6
+Move: -54.634
+0,23468409
+minimum_id: 6
+Move: -54.6313
+0,23871926
+minimum_id: 6
+Move: -54.6392
+0,21768166
+minimum_id: 6
+Move: -54.6283
+0,22067613
+minimum_id: 6
+Move: -54.7058
+0,29495762
+minimum_id: 6
+Move: -54.7369
+0,22326999
+minimum_id: 6
+Move: -54.6728
+0,21545870
+minimum_id: 6
+Move: -54.609
+0,20799113
+minimum_id: 6
+Move: -54.679
+0,22578706
+minimum_id: 6
+Move: -54.6555
+0,23391482
+minimum_id: 6
+Move: -54.6523
+0,22819094
+minimum_id: 6
+Move: -54.6636
+0,22793091
+minimum_id: 6
+Move: -54.6628
+0,21942025
+minimum_id: 6
+Move: -54.6794
+0,21891187
+minimum_id: 6
+Move: -54.6507
+0,21581910
+minimum_id: 6
+Move: -54.591
+0,21680131
+minimum_id: 6
+Move: -54.7024
+0,21255404
+minimum_id: 6
+Move: -54.6461
+0,24033891
+minimum_id: 6
+Move: -54.6673
+0,29936664
+minimum_id: 6
+Move: -54.6996
+0,21571612
+minimum_id: 6
+Move: -54.6371
+0,21878553
+minimum_id: 6
+Move: -54.6653
+0,25168577
+minimum_id: 6
+Move: -54.5885
+0,22176445
+minimum_id: 6
+Move: -54.7529
+0,23827574
+minimum_id: 6
+Move: -54.6592
+0,26570036
+minimum_id: 6
+Move: -54.7008
+0,29128314
+minimum_id: 6
+Move: -54.69
+0,24867406
+minimum_id: 6
+Move: -54.6616
+0,22353575
+minimum_id: 6
+Move: -54.6233
+0,22378299
+minimum_id: 6
+Move: -54.6535
+0,22075553
+minimum_id: 6
+Move: -54.6784
+0,21596332
+minimum_id: 6
+Move: -54.6454
+0,22373034
+minimum_id: 6
+Move: -54.674
+0,21590204
+minimum_id: 6
+Move: -54.6579
+0,23851926
+minimum_id: 6
+Move: -54.7065
+0,24658371
+minimum_id: 6
+Move: -54.7227
+0,23526961
+minimum_id: 6
+Move: -54.6916
+0,22840851
+minimum_id: 6
+Move: -54.6772
+0,21855516
+minimum_id: 6
+Move: -54.7213
+0,21577093
+minimum_id: 6
+Move: -54.6442
+0,21283241
+minimum_id: 6
+Move: -54.6505
+0,22363132
+minimum_id: 6
+Move: -54.5959
+0,22215965
+minimum_id: 6
+Move: -54.6837
+0,21707520
+minimum_id: 6
+Move: -54.7057
+0,28897835
+minimum_id: 6
+Move: -54.7071
+0,29910666
+minimum_id: 6
+Move: -54.5584
+0,21546699
+minimum_id: 6
+Move: -54.7026
+0,21917499
+minimum_id: 6
+Move: -54.6624
+0,23212629
+minimum_id: 6
+Move: -54.6844
+0,24518239
+minimum_id: 6
+Move: -54.6645
+0,29611883
+minimum_id: 6
+Move: -54.6742
+0,24837965
+minimum_id: 6
+Move: -54.622
+0,22388539
+minimum_id: 6
+Move: -54.5674
+0,24789238
+minimum_id: 6
+Move: -54.5931
+0,26423500
+minimum_id: 6
+Move: -54.6502
+0,23224703
+minimum_id: 6
+Move: -54.6859
+0,22434644
+minimum_id: 6
+Move: -54.7579
+0,24720332
+minimum_id: 6
+Move: -54.5895
+0,23672293
+minimum_id: 6
+Move: -54.6369
+0,24738461
+minimum_id: 6
+Move: -54.6825
+0,25009254
+minimum_id: 6
+Move: -54.5883
+0,28576633
+minimum_id: 6
+Move: -54.7137
+0,28037405
+minimum_id: 6
+Move: -54.7067
+0,25131150
+minimum_id: 6
+Move: -54.694
+0,32133205
+minimum_id: 6
+Move: -54.5596
+0,26518686
+minimum_id: 6
+Move: -54.6975
+0,24761498
+minimum_id: 6
+Move: -54.613
+0,25217869
+minimum_id: 6
+Move: -54.6378
+0,22498314
+minimum_id: 6
+Move: -54.7234
+0,20786909
+minimum_id: 6
+Move: -54.6084
+0,21025796
+minimum_id: 6
+Move: -54.6743
+0,23045573
+minimum_id: 6
+Move: -54.6116
+0,21641852
+minimum_id: 6
+Move: -54.671
+0,21902260
+minimum_id: 6
+Move: -54.6875
+0,22010094
+minimum_id: 6
+Move: -54.6982
+0,24593744
+minimum_id: 6
+Move: -54.6451
+0,23219165
+minimum_id: 6
+Move: -54.6442
+0,22051854
+minimum_id: 6
+Move: -54.6373
+0,24283386
+minimum_id: 6
+Move: -54.681
+0,24029037
+minimum_id: 6
+Move: -54.6061
+0,23086724
+minimum_id: 6
+Move: -54.6616
+0,21333629
+minimum_id: 6
+Move: -54.6808
+0,22697573
+minimum_id: 6
+Move: -54.6551
+0,28064797
+minimum_id: 6
+Move: -54.6759
+0,23309611
+minimum_id: 6
+Move: -54.6789
+0,20347575
+minimum_id: 6
+Move: -54.7133
+0,22587445
+minimum_id: 6
+Move: -54.649
+0,22527185
+minimum_id: 6
+Move: -54.6683
+0,25382002
+minimum_id: 6
+Move: -54.7264
+0,24494424
+minimum_id: 6
+Move: -54.7257
+0,23103206
+minimum_id: 6
+Move: -54.6485
+0,24268926
+minimum_id: 6
+Move: -54.6252
+0,22457906
+minimum_id: 6
+Move: -54.7014
+0,22366387
+minimum_id: 6
+Move: -54.6565
+0,21547372
+minimum_id: 6
+Move: -54.6802
+0,20375038
+minimum_id: 6
+Move: -54.7037
+0,22227522
+minimum_id: 6
+Move: -54.55
+0,21993574
+minimum_id: 6
+Move: -54.653
+0,22271668
+minimum_id: 6
+Move: -54.689
+0,22558778
+minimum_id: 6
+Move: -54.6612
+0,22050910
+minimum_id: 6
+Move: -54.5682
+0,23340812
+minimum_id: 6
+Move: -54.5986
+0,25198458
+minimum_id: 6
+Move: -54.633
+0,22594780
+minimum_id: 6
+Move: -54.6301
+0,24325741
+minimum_id: 6
+Move: -54.7087
+0,20442779
+minimum_id: 6
+Move: -54.6445
+0,21134461
+minimum_id: 6
+Move: -54.7276
+0,24200109
+minimum_id: 6
+Move: -54.6995
+0,20545277
+minimum_id: 6
+Move: -54.6872
+0,20609183
+minimum_id: 6
+Move: -54.6364
+0,21930499
+minimum_id: 6
+Move: -54.6734
+0,20403909
+minimum_id: 6
+Move: -54.6435
+0,20005870
+minimum_id: 6
+Move: -54.6909
+0,20744945
+minimum_id: 6
+Move: -54.6845
+0,26784408
+minimum_id: 6
+Move: -54.7035
+0,26177260
+minimum_id: 6
+Move: -54.6345
+0,28451575
+minimum_id: 6
+Move: -54.6463
+0,23787481
+minimum_id: 6
+Move: -54.7572
+0,22087611
+minimum_id: 6
+Move: -54.7021
+0,22775792
+minimum_id: 6
+Move: -54.6527
+0,21387408
+minimum_id: 6
+Move: -54.688
+0,22627060
+minimum_id: 6
+Move: -54.7063
+0,22042848
+minimum_id: 6
+Move: -54.6635
+0,21500239
+minimum_id: 6
+Move: -54.7036
+0,21756074
+minimum_id: 6
+Move: -54.6958
+0,21835407
+minimum_id: 6
+Move: -54.6264
+0,21452312
+minimum_id: 6
+Move: -54.6331
+0,22445737
+minimum_id: 6
+Move: -54.76
+0,22912280
+minimum_id: 6
+Move: -54.729
+0,22669702
+minimum_id: 6
+Move: -54.6366
+0,23968609
+minimum_id: 6
+Move: -54.6689
+0,23936465
+minimum_id: 6
+Move: -54.6485
+0,23376720
+minimum_id: 6
+Move: -54.6577
+0,29098447
+minimum_id: 6
+Move: -54.6866
+0,26282558
+minimum_id: 6
+Move: -54.7082
+0,20942423
+minimum_id: 6
+Move: -54.5891
+0,21352685
+minimum_id: 6
+Move: -54.7186
+0,20999445
+minimum_id: 6
+Move: -54.6842
+0,21803832
+minimum_id: 6
+Move: -54.7215
+0,21273723
+minimum_id: 6
+Move: -54.6594
+0,21425002
+minimum_id: 6
+Move: -54.7238
+0,25475870
+minimum_id: 6
+Move: -54.6383
+0,22558076
+minimum_id: 6
+Move: -54.6852
+0,23946349
+minimum_id: 6
+Move: -54.7227
+0,22208462
+minimum_id: 6
+Move: -54.6348
+0,24883891
+minimum_id: 6
+Move: -54.6413
+0,21416430
+minimum_id: 6
+Move: -54.6862
+0,21289056
+minimum_id: 6
+Move: -54.7469
+0,22088243
+minimum_id: 6
+Move: -54.6371
+0,22280443
+minimum_id: 6
+Move: -54.7055
+0,24336647
+minimum_id: 6
+Move: -54.7689
+0,23290518
+minimum_id: 6
+Move: -54.6964
+0,21048200
+minimum_id: 6
+Move: -54.6775
+0,22187058
+minimum_id: 6
+Move: -54.6798
+0,25171111
+minimum_id: 6
+Move: -54.6425
+0,22278206
+minimum_id: 6
+Move: -54.6577
+0,26044578
+minimum_id: 6
+Move: -54.567
+0,22092300
+minimum_id: 6
+Move: -54.6149
+0,21585669
+minimum_id: 6
+Move: -54.6999
+0,21551069
+minimum_id: 6
+Move: -54.7318
+0,20935686
+minimum_id: 6
+Move: -54.659
+0,20924890
+minimum_id: 6
+Move: -54.6746
+0,21330925
+minimum_id: 6
+Move: -54.6421
+0,20072115
+minimum_id: 6
+Move: -54.6393
+0,21647442
+minimum_id: 6
+Move: -54.6785
+0,21822633
+minimum_id: 6
+Move: -54.6473
+0,22368666
+minimum_id: 6
+Move: -54.5153
+0,22798014
+minimum_id: 6
+Move: -54.7274
+0,22060611
+minimum_id: 6
+Move: -54.689
+0,21987000
+minimum_id: 6
+Move: -54.6873
+0,20853483
+minimum_id: 6
+Move: -54.7259
+0,30884501
+minimum_id: 6
+Move: -54.6901
+0,27809260
+minimum_id: 6
+Move: -54.6591
+0,21952520
+minimum_id: 6
+Move: -54.7086
+0,21836240
+minimum_id: 6
+Move: -54.6891
+0,22058464
+minimum_id: 6
+Move: -54.6379
+0,21341520
+minimum_id: 6
+Move: -54.6899
+0,20462741
+minimum_id: 6
+Move: -54.6772
+0,20531536
+minimum_id: 6
+Move: -54.7217
+0,20589870
+minimum_id: 6
+Move: -54.6646
+0,21972038
+minimum_id: 6
+Move: -54.6824
+0,23434613
+minimum_id: 6
+Move: -54.5908
+0,22226520
+minimum_id: 6
+Move: -54.7095
+0,22520133
+minimum_id: 6
+Move: -54.6683
+0,22212313
+minimum_id: 6
+Move: -54.662
+0,30443351
+minimum_id: 6
+Move: -54.695
+0,29351128
+minimum_id: 6
+Move: -54.7645
+0,20328333
+minimum_id: 6
+Move: -54.726
+0,20610685
+minimum_id: 6
+Move: -54.6516
+0,22495186
+minimum_id: 6
+Move: -54.7077
+0,23608907
+minimum_id: 6
+Move: -54.6465
+0,21904478
+minimum_id: 6
+Move: -54.6945
+0,21674557
+minimum_id: 6
+Move: -54.7104
+0,25762520
+minimum_id: 6
+Move: -54.7407
+0,20900520
+minimum_id: 6
+Move: -54.672
+0,22179406
+minimum_id: 6
+Move: -54.69
+0,20734464
+minimum_id: 6
+Move: -54.6793
+0,23186221
+minimum_id: 6
+Move: -54.6757
+0,21963386
+minimum_id: 6
+Move: -54.6598
+0,21889365
+minimum_id: 6
+Move: -54.676
+0,21035093
+minimum_id: 6
+Move: -54.6793
+0,21635354
+minimum_id: 6
+Move: -54.7013
+0,21975095
+minimum_id: 6
+Move: -54.6041
+0,21923871
+minimum_id: 6
+Move: -54.569
+0,21607387
+minimum_id: 6
+Move: -54.6878
+0,24619775
+minimum_id: 6
+Move: -54.6369
+0,21130757
+minimum_id: 6
+Move: -54.6938
+0,22745870
+minimum_id: 6
+Move: -54.7039
+0,22998519
+minimum_id: 6
+Move: -54.703
+0,21805316
+minimum_id: 6
+Move: -54.6774
+0,24371147
+minimum_id: 6
+Move: -54.6891
+0,29174277
+minimum_id: 6
+Move: -54.6731
+0,27560739
+minimum_id: 6
+Move: -54.604
+0,20612332
+minimum_id: 6
+Move: -54.6685
+0,21769668
+minimum_id: 6
+Move: -54.6933
+0,24349056
+minimum_id: 6
+Move: -54.7317
+0,20820226
+minimum_id: 6
+Move: -54.676
+0,21839776
+minimum_id: 6
+Move: -54.5402
+0,21524648
+minimum_id: 6
+Move: -54.7018
+0,24117406
+minimum_id: 6
+Move: -54.6388
+0,22662927
+minimum_id: 6
+Move: -54.6797
+0,21864314
+minimum_id: 6
+Move: -54.6706
+0,22577578
+minimum_id: 6
+Move: -54.6835
+0,25113167
+minimum_id: 6
+Move: -54.6751
+0,21484333
+minimum_id: 6
+Move: -54.6322
+0,30709111
+minimum_id: 6
+Move: -54.6512
+0,31950685
+minimum_id: 6
+Move: -54.6858
+0,20977331
+minimum_id: 6
+Move: -54.5877
+0,21884016
+minimum_id: 6
+Move: -54.7505
+0,21204981
+minimum_id: 6
+Move: -54.6256
+0,20305035
+minimum_id: 6
+Move: -54.6761
+0,22629279
+minimum_id: 6
+Move: -54.6703
+0,23544071
+minimum_id: 6
+Move: -54.7227
+0,23406834
+minimum_id: 6
+Move: -54.6705
+0,22983725
+minimum_id: 6
+Move: -54.6808
+0,22711124
+minimum_id: 6
+Move: -54.6429
+0,21888220
+minimum_id: 6
+Move: -54.67
+0,21813868
+minimum_id: 6
+Move: -54.6718
+0,21583560
+minimum_id: 6
+Move: -54.6323
+0,21879054
+minimum_id: 6
+Move: -54.6501
+0,21887074
+minimum_id: 6
+Move: -54.7178
+0,21723090
+minimum_id: 6
+Move: -54.6515
+0,21673926
+minimum_id: 6
+Move: -54.6799
+0,21476945
+minimum_id: 6
+Move: -54.6512
+0,24495910
+minimum_id: 6
+Move: -54.5376
+0,22672203
+minimum_id: 6
+Move: -54.6955
+0,23569906
+minimum_id: 6
+Move: -54.6971
+0,22315111
+minimum_id: 6
+Move: -54.6329
+0,25984962
+minimum_id: 6
+Move: -54.7017
+0,21055464
+minimum_id: 6
+Move: -54.6231
+0,21328129
+minimum_id: 6
+Move: -54.6623
+0,25358666
+minimum_id: 6
+Move: -54.6717
+0,30055664
+minimum_id: 6
+Move: -54.6831
+0,21285331
+minimum_id: 6
+Move: -54.7291
+0,22031926
+deadline thread dies [5228]

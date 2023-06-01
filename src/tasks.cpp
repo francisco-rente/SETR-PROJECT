@@ -250,7 +250,6 @@ void camera_task() {
                 if(ids[i] <= minimum_id) {
                     minimum_id = ids[i];
                     minimum_id_idx = i;
-                    // std::cout << "minimum_id: " << minimum_id << std::endl;
 
                     if(minimum_id == 6) {
                         // Calculate center point of each marker
@@ -270,21 +269,11 @@ void camera_task() {
             center_distance = correct_center_distance;
             pthread_mutex_unlock(&camera_mutex);
         }
-        
-        // imshow("Display window", image);
-        // char key = (char) cv::waitKey(1);
-        // if (key == 27)
-        //     break;
 
         #ifdef LOG_TIME
             clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
             fprintf(stdout, "c,%ld,%ld,%ld\n", time1.tv_sec, time1.tv_nsec, diff(time1,time2).tv_nsec);
         #endif
-        // std::cout<<diff(time1,time2).tv_sec<<","<<diff(time1,time2).tv_nsec<<std::endl;
-        // print_time(); 
-        // std::cout << "c," << time1.tv_sec <<"," << time1.tv_nsec << "," << diff(time1,time2).tv_nsec << std::endl;
-
-        //fprintf(stdout, "c,%ld,%ld,%ld\n", time1.tv_sec, time1.tv_nsec, diff(time1,time2).tv_nsec);
         sched_yield();
     }
 }
@@ -325,8 +314,6 @@ void coordinator_task() {
     enum CoordinatorState state = ROTATING_STATE;
 
     while (!done) {
-        // std::cout << "coordinator, current_instruction="  << current_instruction << ", counter=" << counter << std::endl;
-        
         timespec time1, time2;
         
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
@@ -367,7 +354,6 @@ void coordinator_task() {
                 unbalanced_move(BACKWARD, 20, 50);
             }
             if(current_instruction == 6) {
-                //std::cout << center_distance << std::endl;
                 if(new_center_distance < -10) {
                     unbalanced_move(FORWARD, 30, 35);
                 }
@@ -418,14 +404,8 @@ void motor_task() {
         
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
 
-
-        // std::cout << "motor" << std::endl;
         pthread_mutex_lock(&movement_mutex);
-        
-        // std::cout << movement.speed_left  << "," << movement.speed_right << std::endl;
         alphabot.setSpeed(movement.speed_left, movement.speed_right);
-
-        //std::cout << "moving in " << movement.direction << " with speed=" << movement.speed << std::endl;
 
         switch (movement.direction) {
             case FORWARD:
@@ -444,8 +424,6 @@ void motor_task() {
                 alphabot.stop();
                 break;
         }
-        // int ms = 1000;
-        // gpioDelay(5 * 1000);
     
         pthread_mutex_unlock(&movement_mutex);
 
@@ -481,8 +459,6 @@ int main ()
     Realtime::setup();
     
     inputVideo.open(0);
-    // inputVideo.set(cv::CAP_PROP_FRAME_WIDTH, 640);
-    // inputVideo.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
 
     inputVideo.set(cv::CAP_PROP_FRAME_WIDTH, RES_WIDTH);
     inputVideo.set(cv::CAP_PROP_FRAME_HEIGHT, RES_HEIGHT);
@@ -528,22 +504,22 @@ int main ()
     pthread_create(&thread4, NULL, run_deadline, (void *) params4);
 
 
-    sleep(120);
+    sleep(45);
 
     done = 1;
 
 
     pthread_join(thread1, NULL);
-    // std::cout << "Joined 1" << std::endl;
+    std::cout << "Joined 1" << std::endl;
 
     pthread_join(thread2, NULL);
-    //std::cout << "Joined 2" << std::endl;
+    std::cout << "Joined 2" << std::endl;
 
     pthread_join(thread3, NULL);
-    //std::cout << "Joined 3" << std::endl;
+    std::cout << "Joined 3" << std::endl;
     
     pthread_join(thread4, NULL);
-    //std::cout << "Joined 4" << std::endl;
+    std::cout << "Joined 4" << std::endl;
 
     pthread_mutexattr_destroy(&movement_mutex_attr);
     //std::cout << "Destroyed mutex attr" << std::endl;
@@ -556,41 +532,4 @@ int main ()
     printf("main dies [%ld]\n", gettid());
     return 0;
 }
-
-
-
-
-
-// void do_useful_computation(void) {
-//     /* do periodic computation, with execution time enforcement */
-//     while (1) {
-//         // do_the_computation();
-//         std::cout << "Doing computation" << std::endl;
-//         /*
-//         * Notify the scheduler the end of the computation
-//         * This syscall will block until the next replenishment
-//         */
-//         sched_yield();
-//     }
-// }
-
-// int main (int argc, char **argv) {
-//     int ret;
-//     int flags = 0;
-//     struct sched_attr attr;
-//     memset(&attr, 0, sizeof(attr));
-//     attr.size = sizeof(attr);
-//     /* This creates a 200ms / 1s reservation */
-//     attr.sched_policy = SCHED_DEADLINE;
-//     attr.sched_runtime = 200000000; /*200 ms*/
-//     attr.sched_deadline = attr.sched_period = 1000000000; /*1 s*/
-//     ret = sched_setattr(0, &attr, flags);
-//     if (ret < 0) {
-//         perror("sched_setattr failed to set the priorities");
-//         exit(-1);
-//     }
-//     do_useful_computation();
-//     exit(0);
-// }
-
 

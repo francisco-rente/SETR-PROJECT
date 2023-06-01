@@ -15,6 +15,7 @@
 #include <pigpio.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/aruco.hpp>
+#include <sys/mman.h>
 #include <cmath>
 
 #define gettid() syscall(__NR_gettid)
@@ -31,6 +32,10 @@
 
 #define DR 16
 #define DL 19
+
+
+#define RES_WIDTH 320
+#define RES_HEIGHT 240
 
 static volatile int done;
 
@@ -248,20 +253,36 @@ static volatile movement_params movement;
 static pthread_mutex_t movement_mutex;
 
 
+inline void print_time() {
+    timespec time1; 
+    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+    std::cout << time1.tv_sec << "," << time1.tv_nsec << std::endl;
+}
+
+
+
 void proximity_task() {
+
+    mlockall(MCL_CURRENT | MCL_FUTURE);
+
     gpioSetPullUpDown(DR, PI_PUD_UP);
     gpioSetPullUpDown(DL, PI_PUD_UP);
 
     int x = 0;
     while (!done) {
-        // timespec time1, time2;
-        // int temp;
-        // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+        timespec time1, time2;
+        int temp;
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
 
         near_object = 1-(gpioRead(DR) && gpioRead(DL));
 
-        // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
         // std::cout<<diff(time1,time2).tv_sec<<","<<diff(time1,time2).tv_nsec<<std::endl;
+
+        // std::cout << "p," << time1.tv_sec <<"," << time1.tv_nsec << "," << diff(time1,time2).tv_nsec << std::endl;
+        //fprintf(stdout, "p,%ld,%ld,%ld\n", time1.tv_sec, time1.tv_nsec, diff(time1,time2).tv_nsec);
+
+        // print_time();
         sched_yield();
     }
 }
@@ -269,6 +290,8 @@ void proximity_task() {
 static cv::VideoCapture inputVideo;
 
 void camera_task() {
+    mlockall(MCL_CURRENT | MCL_FUTURE);
+
 
     cv::Mat cameraMatrix, distCoeffs;
     float markerLength = 0.05;
@@ -291,9 +314,9 @@ void camera_task() {
     std::cout << "Starting camera loop" << std::endl;
 
     while (!done) {
-        // timespec time1, time2;
-        // int temp;
-        // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+        timespec time1, time2;
+        int temp;
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
 
         marker_id = -1;
         inputVideo.grab();
@@ -316,12 +339,12 @@ void camera_task() {
                 if(ids[i] <= minimum_id) {
                     minimum_id = ids[i];
                     minimum_id_idx = i;
-                    std::cout << "minimum_id: " << minimum_id << std::endl;
+                    // std::cout << "minimum_id: " << minimum_id << std::endl;
 
                     if(minimum_id == 6) {
                         // Calculate center point of each marker
                         markerCenter = (corners[minimum_id_idx][0] + corners[minimum_id_idx][1] + corners[minimum_id_idx][2] + corners[minimum_id_idx][3]) / 4;
-                        correct_center_distance = markerCenter.x - 320;
+                        correct_center_distance = markerCenter.x - (int) RES_WIDTH/2;
                         // Calculate marker area
                         int area = cv::contourArea(corners[minimum_id_idx]);
                         if(area > maximum_area) {
@@ -333,6 +356,7 @@ void camera_task() {
             }
             if(minimum_id == 6) {
                 center_distance = correct_center_distance;
+                std::cout << "CD: " << center_distance << std::endl;
             }
             marker_id = minimum_id;
         }
@@ -342,8 +366,12 @@ void camera_task() {
         if (key == 27)
             break;
 
-        // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
         // std::cout<<diff(time1,time2).tv_sec<<","<<diff(time1,time2).tv_nsec<<std::endl;
+        // print_time(); 
+        // std::cout << "c," << time1.tv_sec <<"," << time1.tv_nsec << "," << diff(time1,time2).tv_nsec << std::endl;
+
+        //fprintf(stdout, "c,%ld,%ld,%ld\n", time1.tv_sec, time1.tv_nsec, diff(time1,time2).tv_nsec);
         sched_yield();
     }
 }
@@ -371,6 +399,8 @@ void unbalanced_move(direction dir, int speed_left, int speed_right) {
 }
 
 void coordinator_task() {
+    mlockall(MCL_CURRENT | MCL_FUTURE);
+
     int counter = 0;
     int current_instruction = -1;
 
@@ -379,9 +409,9 @@ void coordinator_task() {
     while (!done) {
         // std::cout << "coordinator, current_instruction="  << current_instruction << ", counter=" << counter << std::endl;
         
-        // timespec time1, time2;
-        // int temp;
-        // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+        timespec time1, time2;
+        int temp;
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
 
         if(near_object == 1) {
             move(STOP, 0);
@@ -414,9 +444,9 @@ void coordinator_task() {
                 unbalanced_move(BACKWARD, 20, 50);
             }
             if(current_instruction == 6) {
-                std::cout << center_distance << std::endl;
+                //std::cout << center_distance << std::endl;
                 if(center_distance < -10) {
-                    unbalanced_move(FORWARD, 30, 35);
+                    unbalanced_move(FORWARD, 25, 45);
                 }
                 else if(center_distance > 10) {
                     unbalanced_move(FORWARD, 35, 30);
@@ -433,16 +463,22 @@ void coordinator_task() {
         }
         counter--;
 
-        // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
         // std::cout<<diff(time1,time2).tv_sec<<","<<diff(time1,time2).tv_nsec<<std::endl;
+        // std::cout << "o," << time1.tv_sec <<"," << time1.tv_nsec << "," << diff(time1,time2).tv_nsec << std::endl;
+        //fprintf(stdout, "o,%ld,%ld,%ld\n", time1.tv_sec, time1.tv_nsec, diff(time1,time2).tv_nsec);
 
         // std::cout << "coordinator yield" << std::endl;
         sched_yield();
     }
 }
 
+
+
+
 void motor_task() {
-   
+    mlockall(MCL_CURRENT | MCL_FUTURE);
+
     Alphabot alphabot = Alphabot();
     if(alphabot.init()) {
         std::cout << "exited with error code 1";
@@ -451,9 +487,9 @@ void motor_task() {
 
     while (!done) {
 
-        // timespec time1, time2;
-        // int temp;
-        // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+        timespec time1, time2;
+        int temp;
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
 
 
         // std::cout << "motor" << std::endl;
@@ -487,8 +523,11 @@ void motor_task() {
         pthread_mutex_unlock(&movement_mutex);
 
 
-        // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
         // std::cout<<diff(time1,time2).tv_sec<<","<<diff(time1,time2).tv_nsec<<std::endl;
+        // std::cout << "m," << time1.tv_sec <<"," << time1.tv_nsec << "," << diff(time1,time2).tv_nsec << std::endl;
+        //fprintf(stdout, "m,%ld,%ld,%ld\n", time1.tv_sec, time1.tv_nsec, diff(time1,time2).tv_nsec);
+
         sched_yield();
     }
 }
@@ -512,9 +551,12 @@ int main (int argc, char **argv)
     }
     
     inputVideo.open(0);
-    inputVideo.set(cv::CAP_PROP_FRAME_WIDTH, 640);
-    inputVideo.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
-    inputVideo.set(cv::CAP_PROP_FPS, 90);
+    // inputVideo.set(cv::CAP_PROP_FRAME_WIDTH, 640);
+    // inputVideo.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
+
+    inputVideo.set(cv::CAP_PROP_FRAME_WIDTH, RES_WIDTH);
+    inputVideo.set(cv::CAP_PROP_FRAME_HEIGHT, RES_HEIGHT);
+    inputVideo.set(cv::CAP_PROP_FPS, 20);
 
     printf("main thread [%ld]\n", gettid());
 
@@ -526,9 +568,13 @@ int main (int argc, char **argv)
     pthread_mutexattr_init(&movement_mutex_attr);
     pthread_mutex_init(&movement_mutex, &movement_mutex_attr);
 
+    pthread_attr_t init_attr;
+    pthread_attr_init(&init_attr);
+    pthread_attr_setscope(&init_attr, PTHREAD_SCOPE_SYSTEM);
+
     // Distance detection
     pthread_t thread1;
-    struct task_params *params1 = get_task_params(150*us, 2 * ms, 2 * ms, proximity_task);
+    struct task_params *params1 = get_task_params(150*us, 7 * ms, 7 * ms, proximity_task);
     pthread_create(&thread1, NULL, run_deadline, (void *) params1);
 
     // Camera 
@@ -538,16 +584,16 @@ int main (int argc, char **argv)
 
     // Coordinator
     pthread_t thread3;
-    struct task_params *params3 = get_task_params(150*us, 2 * ms, 2 * ms, coordinator_task);
+    struct task_params *params3 = get_task_params(500*us,  7 * ms,  7 * ms, coordinator_task);
     pthread_create(&thread3, NULL, run_deadline, (void *) params3);
 
     // Motor control
     pthread_t thread4;
-    struct task_params *params4 = get_task_params(150*us, 2 * ms, 2 * ms, motor_task);
+    struct task_params *params4 = get_task_params(150*us,  7 * ms,  7 * ms, motor_task);
     pthread_create(&thread4, NULL, run_deadline, (void *) params4);
 
 
-    sleep(20);
+    sleep(50);
 
     done = 1;
 

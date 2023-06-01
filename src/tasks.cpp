@@ -18,6 +18,9 @@
 #include <sys/mman.h>
 #include <cmath>
 
+#include "Realtime.h"
+#include "Alphabot.h"
+
 #define gettid() syscall(__NR_gettid)
 
 #define SCHED_DEADLINE	6
@@ -33,6 +36,7 @@
 #define DR 16
 #define DL 19
 
+#define LOG_TIME 1
 
 #define RES_WIDTH 320
 #define RES_HEIGHT 240
@@ -72,106 +76,6 @@ int sched_getattr(pid_t pid,
     return syscall(__NR_sched_getattr, pid, attr, size, flags);
 }
 
-class Alphabot {
-    private:
-        int AIN1;
-        int AIN2;
-        int BIN1;
-        int BIN2;
-        int ENA;
-        int ENB;
-        int speed_left;
-        int speed_right;
-
-    public:
-        Alphabot() {
-            this->AIN1 = 12;
-            this->AIN2 = 13;
-            this->ENA = 6;
-            this->BIN1 = 20;
-            this->BIN2 = 21;
-            this->ENB = 26;
-            this->speed_left = 10;
-            this->speed_right = 10;
-        }
-
-        int init(){
-            std::cout << "init" << std::endl;
-
-            std::cout << "set pins" << std::endl;
-            gpioSetMode(AIN1, PI_OUTPUT);
-            gpioSetMode(AIN2, PI_OUTPUT);
-            gpioSetMode(BIN1, PI_OUTPUT);
-            gpioSetMode(BIN2, PI_OUTPUT);
-            gpioSetMode(ENA, PI_OUTPUT);
-            gpioSetMode(ENB, PI_OUTPUT);
-
-            gpioSetPWMfrequency(ENA, 500);
-            gpioSetPWMfrequency(ENB, 500);
-            gpioSetPWMrange(ENA, 100);
-            gpioSetPWMrange(ENB, 100);
-            return 0;
-        }
-
-        int setSpeed(int speed_left, int speed_right) {
-            this->speed_left = speed_left;
-            this->speed_right = speed_right;
-        }
-
-        int stop() {
-            gpioPWM(this->ENA, 0);
-            gpioPWM(this->ENB, 0);
-            gpioWrite(this->AIN1, LOW);
-            gpioWrite(this->AIN2, LOW); 
-            gpioWrite(this->BIN1, LOW);
-            gpioWrite(this->BIN2, LOW);
-            return 0;
-        }
-
-        int forward() {
-            gpioPWM(this->ENA, this->speed_left);
-            gpioPWM(this->ENB, this->speed_right);
-            gpioWrite(this->AIN1, LOW);
-            gpioWrite(this->AIN2, HIGH); 
-            gpioWrite(this->BIN1, LOW);
-            gpioWrite(this->BIN2, HIGH);
-            return 0;
-        }
-
-        int backward() {
-            gpioPWM(this->ENA, this->speed_left);
-            gpioPWM(this->ENB, this->speed_right);
-            gpioWrite(this->AIN1, HIGH);
-            gpioWrite(this->AIN2, LOW); 
-            gpioWrite(this->BIN1, HIGH);
-            gpioWrite(this->BIN2, LOW);
-            return 0;
-        }
-
-        int left() {
-            gpioPWM(this->ENA, this->speed_left);
-            gpioPWM(this->ENB, this->speed_right);
-            gpioWrite(this->AIN1, HIGH);
-            gpioWrite(this->AIN2, LOW); 
-            gpioWrite(this->BIN1, LOW);
-            gpioWrite(this->BIN2, HIGH);
-            return 0;
-        }
-
-        int right() {
-            gpioPWM(this->ENA, this->speed_left);
-            gpioPWM(this->ENB, this->speed_right);
-            gpioWrite(this->AIN1, LOW);
-            gpioWrite(this->AIN2, HIGH); 
-            gpioWrite(this->BIN1, HIGH);
-            gpioWrite(this->BIN2, LOW);
-            return 0;
-        }
-
-        ~Alphabot(){
-            this->stop();
-        }
-};
 
 timespec diff(timespec start, timespec end)
 {
@@ -261,29 +165,30 @@ inline void print_time() {
 }
 
 
-
 void proximity_task() {
+    #ifdef LOG_TIME
+        timespec time;
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time);
+        fprintf(stdout, "st_p,%ld,%ld,%ld\n", time.tv_sec, time.tv_nsec, 0);
+    #endif
 
     mlockall(MCL_CURRENT | MCL_FUTURE);
 
     gpioSetPullUpDown(DR, PI_PUD_UP);
     gpioSetPullUpDown(DL, PI_PUD_UP);
 
-    int x = 0;
     while (!done) {
         timespec time1, time2;
-        int temp;
+        
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
 
         near_object = 1-(gpioRead(DR) && gpioRead(DL));
 
-        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
-        // std::cout<<diff(time1,time2).tv_sec<<","<<diff(time1,time2).tv_nsec<<std::endl;
+        #ifdef LOG_TIME
+            clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+            fprintf(stdout, "p,%ld,%ld,%ld\n", time1.tv_sec, time1.tv_nsec, diff(time1,time2).tv_nsec);
+        #endif
 
-        // std::cout << "p," << time1.tv_sec <<"," << time1.tv_nsec << "," << diff(time1,time2).tv_nsec << std::endl;
-        //fprintf(stdout, "p,%ld,%ld,%ld\n", time1.tv_sec, time1.tv_nsec, diff(time1,time2).tv_nsec);
-
-        // print_time();
         sched_yield();
     }
 }
@@ -291,8 +196,13 @@ void proximity_task() {
 static cv::VideoCapture inputVideo;
 
 void camera_task() {
-    mlockall(MCL_CURRENT | MCL_FUTURE);
+    #ifdef LOG_TIME
+        timespec time;
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time);
+        fprintf(stdout, "st_c,%ld,%ld,%ld\n", time.tv_sec, time.tv_nsec, 0);
+    #endif
 
+    mlockall(MCL_CURRENT | MCL_FUTURE);
 
     cv::Mat cameraMatrix, distCoeffs;
     float markerLength = 0.05;
@@ -316,7 +226,7 @@ void camera_task() {
 
     while (!done) {
         timespec time1, time2;
-        int temp;
+        
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
 
         marker_id = -1;
@@ -366,7 +276,10 @@ void camera_task() {
         // if (key == 27)
         //     break;
 
-        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+        #ifdef LOG_TIME
+            clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+            fprintf(stdout, "c,%ld,%ld,%ld\n", time1.tv_sec, time1.tv_nsec, diff(time1,time2).tv_nsec);
+        #endif
         // std::cout<<diff(time1,time2).tv_sec<<","<<diff(time1,time2).tv_nsec<<std::endl;
         // print_time(); 
         // std::cout << "c," << time1.tv_sec <<"," << time1.tv_nsec << "," << diff(time1,time2).tv_nsec << std::endl;
@@ -399,6 +312,11 @@ void unbalanced_move(direction dir, int speed_left, int speed_right) {
 }
 
 void coordinator_task() {
+    #ifdef LOG_TIME
+        timespec time;
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time);
+        fprintf(stdout, "st_o,%ld,%ld,%ld\n", time.tv_sec, time.tv_nsec, 0);
+    #endif
     mlockall(MCL_CURRENT | MCL_FUTURE);
 
     int counter = 0;
@@ -410,7 +328,7 @@ void coordinator_task() {
         // std::cout << "coordinator, current_instruction="  << current_instruction << ", counter=" << counter << std::endl;
         
         timespec time1, time2;
-        int temp;
+        
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
 
         pthread_mutex_lock(&camera_mutex);
@@ -468,12 +386,11 @@ void coordinator_task() {
         }
         counter--;
 
-        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
-        // std::cout<<diff(time1,time2).tv_sec<<","<<diff(time1,time2).tv_nsec<<std::endl;
-        // std::cout << "o," << time1.tv_sec <<"," << time1.tv_nsec << "," << diff(time1,time2).tv_nsec << std::endl;
-        //fprintf(stdout, "o,%ld,%ld,%ld\n", time1.tv_sec, time1.tv_nsec, diff(time1,time2).tv_nsec);
+        #ifdef LOG_TIME
+            clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+            fprintf(stdout, "o,%ld,%ld,%ld\n", time1.tv_sec, time1.tv_nsec, diff(time1,time2).tv_nsec);
+        #endif
 
-        // std::cout << "coordinator yield" << std::endl;
         sched_yield();
     }
 }
@@ -482,6 +399,11 @@ void coordinator_task() {
 
 
 void motor_task() {
+    #ifdef LOG_TIME
+        timespec time;
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time);
+        fprintf(stdout, "st_m,%ld,%ld,%ld\n", time.tv_sec, time.tv_nsec, 0);
+    #endif
     mlockall(MCL_CURRENT | MCL_FUTURE);
 
     Alphabot alphabot = Alphabot();
@@ -493,7 +415,7 @@ void motor_task() {
     while (!done) {
 
         timespec time1, time2;
-        int temp;
+        
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
 
 
@@ -529,9 +451,10 @@ void motor_task() {
 
 
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
-        // std::cout<<diff(time1,time2).tv_sec<<","<<diff(time1,time2).tv_nsec<<std::endl;
-        // std::cout << "m," << time1.tv_sec <<"," << time1.tv_nsec << "," << diff(time1,time2).tv_nsec << std::endl;
-        //fprintf(stdout, "m,%ld,%ld,%ld\n", time1.tv_sec, time1.tv_nsec, diff(time1,time2).tv_nsec);
+        #ifdef LOG_TIME
+            clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+            fprintf(stdout, "m,%ld,%ld,%ld\n", time1.tv_sec, time1.tv_nsec, diff(time1,time2).tv_nsec);
+        #endif
 
         sched_yield();
     }
@@ -547,13 +470,15 @@ task_params* get_task_params(int runtime, int period, int deadline, void (*funct
 }
 
 
-int main (int argc, char **argv)
+int main ()
 {
 
     if (gpioInitialise() < 0)
     {
         return 1;
     }
+
+    Realtime::setup();
     
     inputVideo.open(0);
     // inputVideo.set(cv::CAP_PROP_FRAME_WIDTH, 640);
@@ -561,7 +486,7 @@ int main (int argc, char **argv)
 
     inputVideo.set(cv::CAP_PROP_FRAME_WIDTH, RES_WIDTH);
     inputVideo.set(cv::CAP_PROP_FRAME_HEIGHT, RES_HEIGHT);
-    inputVideo.set(cv::CAP_PROP_FPS, 20);
+    inputVideo.set(cv::CAP_PROP_FPS, 25);
 
     printf("main thread [%ld]\n", gettid());
 
@@ -589,7 +514,7 @@ int main (int argc, char **argv)
 
     // Camera 
     pthread_t thread2;                                      
-    struct task_params *params2 = get_task_params((int) 45*ms, (int) 50*ms , (int) 50*ms, camera_task);
+    struct task_params *params2 = get_task_params((int) 35*ms, (int) 40*ms , (int) 40*ms, camera_task);
     pthread_create(&thread2, NULL, run_deadline, (void *) params2);
 
     // Coordinator
@@ -603,7 +528,7 @@ int main (int argc, char **argv)
     pthread_create(&thread4, NULL, run_deadline, (void *) params4);
 
 
-    sleep(50);
+    sleep(120);
 
     done = 1;
 

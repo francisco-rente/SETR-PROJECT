@@ -251,6 +251,7 @@ struct movement_params {
 
 static volatile movement_params movement;
 static pthread_mutex_t movement_mutex;
+static pthread_mutex_t camera_mutex;
 
 
 inline void print_time() {
@@ -354,17 +355,16 @@ void camera_task() {
                     }
                 }
             }
-            if(minimum_id == 6) {
-                center_distance = correct_center_distance;
-                std::cout << "CD: " << center_distance << std::endl;
-            }
+            pthread_mutex_lock(&camera_mutex);
             marker_id = minimum_id;
+            center_distance = correct_center_distance;
+            pthread_mutex_unlock(&camera_mutex);
         }
         
-        imshow("Display window", image);
-        char key = (char) cv::waitKey(1);
-        if (key == 27)
-            break;
+        // imshow("Display window", image);
+        // char key = (char) cv::waitKey(1);
+        // if (key == 27)
+        //     break;
 
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
         // std::cout<<diff(time1,time2).tv_sec<<","<<diff(time1,time2).tv_nsec<<std::endl;
@@ -413,15 +413,20 @@ void coordinator_task() {
         int temp;
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
 
+        pthread_mutex_lock(&camera_mutex);
+        int new_marker_id = marker_id;
+        int new_center_distance = center_distance;
+        pthread_mutex_unlock(&camera_mutex);
+
         if(near_object == 1) {
             move(STOP, 0);
         } else {
-            if(current_instruction == -1 && marker_id >= 0 && marker_id <= 5) {
-                current_instruction = marker_id;
+            if(current_instruction == -1 && new_marker_id >= 0 && new_marker_id <= 5) {
+                current_instruction = new_marker_id;
                 counter = 1000;
             }
-            if((current_instruction == -1 || current_instruction == 6) && marker_id == 6) {
-                current_instruction = marker_id;
+            if((current_instruction == -1 || current_instruction == 6) && new_marker_id == 6) {
+                current_instruction = new_marker_id;
                 counter = 200;
             }
 
@@ -445,10 +450,10 @@ void coordinator_task() {
             }
             if(current_instruction == 6) {
                 //std::cout << center_distance << std::endl;
-                if(center_distance < -10) {
-                    unbalanced_move(FORWARD, 25, 45);
+                if(new_center_distance < -10) {
+                    unbalanced_move(FORWARD, 30, 35);
                 }
-                else if(center_distance > 10) {
+                else if(new_center_distance > 10) {
                     unbalanced_move(FORWARD, 35, 30);
                 } else {
                     move(FORWARD, MOVEMENT_SPEED);
@@ -567,6 +572,11 @@ int main (int argc, char **argv)
     pthread_mutexattr_setprotocol(&movement_mutex_attr, PTHREAD_PRIO_INHERIT);
     pthread_mutexattr_init(&movement_mutex_attr);
     pthread_mutex_init(&movement_mutex, &movement_mutex_attr);
+
+    pthread_mutexattr_t camera_mutex_attr;
+    pthread_mutexattr_setprotocol(&camera_mutex_attr, PTHREAD_PRIO_INHERIT);
+    pthread_mutexattr_init(&camera_mutex_attr);
+    pthread_mutex_init(&camera_mutex, &camera_mutex_attr);
 
     pthread_attr_t init_attr;
     pthread_attr_init(&init_attr);

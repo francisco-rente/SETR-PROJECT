@@ -462,7 +462,8 @@ int main ()
 
     inputVideo.set(cv::CAP_PROP_FRAME_WIDTH, RES_WIDTH);
     inputVideo.set(cv::CAP_PROP_FRAME_HEIGHT, RES_HEIGHT);
-    inputVideo.set(cv::CAP_PROP_FPS, 25);
+    // inputVideo.set(cv::CAP_PROP_FPS, 45); // Config A
+    inputVideo.set(cv::CAP_PROP_FPS, 25); // Config B
 
     printf("main thread [%ld]\n", gettid());
 
@@ -483,28 +484,51 @@ int main ()
     pthread_attr_init(&init_attr);
     pthread_attr_setscope(&init_attr, PTHREAD_SCOPE_SYSTEM);
 
+
+    // ---------------- Config A ----------------
+    // Distance detection
+    // pthread_t thread1;
+    // struct task_params *params1 = get_task_params(80*us, 7 * ms, 7 * ms, proximity_task);
+    // pthread_create(&thread1, NULL, run_deadline, (void *) params1);
+
+    // // Camera 
+    // pthread_t thread2;                                      
+    // struct task_params *params2 = get_task_params((int) 20*ms, (int) 22*ms , (int) 22*ms, camera_task);
+    // pthread_create(&thread2, NULL, run_deadline, (void *) params2);
+
+    // // Coordinator
+    // pthread_t thread3;
+    // struct task_params *params3 = get_task_params(80*us,  7 * ms,  7 * ms, coordinator_task);
+    // pthread_create(&thread3, NULL, run_deadline, (void *) params3);
+
+    // // Motor control
+    // pthread_t thread4;
+    // struct task_params *params4 = get_task_params(150*us,  7 * ms,  7 * ms, motor_task);
+    // pthread_create(&thread4, NULL, run_deadline, (void *) params4);
+
+    // ---------------- Config B ----------------
     // Distance detection
     pthread_t thread1;
-    struct task_params *params1 = get_task_params(150*us, 7 * ms, 7 * ms, proximity_task);
+    struct task_params *params1 = get_task_params((int) 200*us , 7 * ms, 7 * ms, proximity_task);
     pthread_create(&thread1, NULL, run_deadline, (void *) params1);
 
     // Camera 
     pthread_t thread2;                                      
-    struct task_params *params2 = get_task_params((int) 35*ms, (int) 40*ms , (int) 40*ms, camera_task);
+    struct task_params *params2 = get_task_params((int) 35*ms, (int) 42*ms , (int) 42*ms, camera_task);
     pthread_create(&thread2, NULL, run_deadline, (void *) params2);
 
     // Coordinator
     pthread_t thread3;
-    struct task_params *params3 = get_task_params(500*us,  7 * ms,  7 * ms, coordinator_task);
+    struct task_params *params3 = get_task_params((int) 150*us,  7 * ms,  7 * ms, coordinator_task);
     pthread_create(&thread3, NULL, run_deadline, (void *) params3);
 
     // Motor control
     pthread_t thread4;
-    struct task_params *params4 = get_task_params(150*us,  7 * ms,  7 * ms, motor_task);
+    struct task_params *params4 = get_task_params((int) 600*us,  7 * ms,  7 * ms, motor_task);
     pthread_create(&thread4, NULL, run_deadline, (void *) params4);
 
 
-    sleep(45);
+    sleep(60);
 
     done = 1;
 

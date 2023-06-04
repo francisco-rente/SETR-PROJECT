@@ -21,6 +21,23 @@
 #include "Realtime.h"
 #include "Alphabot.h"
 
+#define HIGH 1
+#define LOW 0
+
+#define DR 16
+#define DL 19
+#define JD 7
+
+#define LOG_TIME 1
+#define CONFIG 1
+#define SHUTDOWN_TASK 1
+
+#define RES_WIDTH 320
+#define RES_HEIGHT 240
+
+
+
+
 #define gettid() syscall(__NR_gettid)
 
 #define SCHED_DEADLINE	6
@@ -30,17 +47,6 @@
 #define __NR_sched_getattr	381
 #endif
 
-#define HIGH 1
-#define LOW 0
-
-#define DR 16
-#define DL 19
-
-#define LOG_TIME 1
-#define CONFIG 1
-
-#define RES_WIDTH 320
-#define RES_HEIGHT 240
 
 static volatile int done;
 
@@ -96,9 +102,9 @@ timespec diff(timespec start, timespec end)
 #define MOVEMENT_SPEED 30
 
 struct task_params {
-    int runtime;
-    int period;
-    int deadline;
+    unsigned long runtime;
+    unsigned long period;
+    unsigned long deadline;
     void (*function)(void);
 };
 
@@ -165,6 +171,14 @@ inline void print_time() {
     timespec time1; 
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
     std::cout << time1.tv_sec << "," << time1.tv_nsec << std::endl;
+}
+
+void shutdown_task() {
+    gpioSetPullUpDown(JD, PI_PUD_UP);
+    while (!done) {
+        done = 1 - gpioRead(JD);
+        sched_yield();
+    }
 }
 
 
@@ -432,7 +446,7 @@ void motor_task() {
     }
 }
 
-task_params* get_task_params(int runtime, int period, int deadline, void (*function)(void)) {
+task_params* get_task_params(unsigned long runtime, unsigned long period, unsigned long deadline, void (*function)(void)) {
     struct task_params *params = (struct task_params *)malloc(sizeof(struct task_params));
     params->runtime = runtime;
     params->period = period;
@@ -467,8 +481,8 @@ int main ()
 
     printf("main thread [%ld]\n", gettid());
 
-    int ms = 1000000;
-    int us = 1000;
+    unsigned long ms = 1000000;
+    unsigned long us = 1000;
 
     pthread_mutexattr_t movement_mutex_attr;
     pthread_mutexattr_setprotocol(&movement_mutex_attr, PTHREAD_PRIO_INHERIT);
@@ -510,54 +524,60 @@ int main ()
     // ---------------- Config B ----------------
     // Distance detection
     pthread_t thread1;
-    struct task_params *params1 = get_task_params((int) 200*us , 7 * ms, 7 * ms, proximity_task);
+    struct task_params *params1 = get_task_params(200*us , 7 * ms, 7 * ms, proximity_task);
     pthread_create(&thread1, NULL, run_deadline, (void *) params1);
 
     // Camera 
     pthread_t thread2;                                      
-    struct task_params *params2 = get_task_params((int) 35*ms, (int) 42*ms , (int) 42*ms, camera_task);
+    struct task_params *params2 = get_task_params(35*ms, 42*ms , 42*ms, camera_task);
     pthread_create(&thread2, NULL, run_deadline, (void *) params2);
 
     // Coordinator
     pthread_t thread3;
-    struct task_params *params3 = get_task_params((int) 150*us,  7 * ms,  7 * ms, coordinator_task);
+    struct task_params *params3 = get_task_params(150*us,  7 * ms,  7 * ms, coordinator_task);
     pthread_create(&thread3, NULL, run_deadline, (void *) params3);
 
     // Motor control
     pthread_t thread4;
-    struct task_params *params4 = get_task_params((int) 600*us,  7 * ms,  7 * ms, motor_task);
+    struct task_params *params4 = get_task_params(600*us,  7 * ms,  7 * ms, motor_task);
     pthread_create(&thread4, NULL, run_deadline, (void *) params4);
     #elif CONFIG==3
     // ---------------- Config C ----------------
     // Distance detection
     pthread_t thread1;
-    struct task_params *params1 = get_task_params((int) 280*us , 7 * ms, 7 * ms, proximity_task);
+    struct task_params *params1 = get_task_params(280*us , 7 * ms, 7 * ms, proximity_task);
     pthread_create(&thread1, NULL, run_deadline, (void *) params1);
 
     // Camera 
     pthread_t thread2;                                      
-    struct task_params *params2 = get_task_params((int) 51*ms, (int) 63*ms , (int) 63*ms, camera_task);
+    struct task_params *params2 = get_task_params(51*ms, 63*ms, 63*ms, camera_task);
     pthread_create(&thread2, NULL, run_deadline, (void *) params2);
 
     // Coordinator
     pthread_t thread3;
-    struct task_params *params3 = get_task_params((int) 220*us,  7 * ms,  7 * ms, coordinator_task);
+    struct task_params *params3 = get_task_params(220*us,  7 * ms,  7 * ms, coordinator_task);
     pthread_create(&thread3, NULL, run_deadline, (void *) params3);
 
     // Motor control
     pthread_t thread4;
-    struct task_params *params4 = get_task_params((int) 870*us,  7 * ms,  7 * ms, motor_task);
+    struct task_params *params4 = get_task_params(870*us,  7 * ms,  7 * ms, motor_task);
     pthread_create(&thread4, NULL, run_deadline, (void *) params4);
     #else
     printf("Please use #define CONFIG {1,2,3}\n");
     return 1;
     #endif
 
-
+    #ifdef SHUTDOWN_TASK
+    pthread_t thread5;
+    struct task_params *params5 = get_task_params(100*us, 5000*ms, 5000*ms, shutdown_task);
+    pthread_create(&thread5, NULL, run_deadline, (void *) params5);
+    while(!done) {
+        sleep(1);
+    }
+    #else
     sleep(60);
-
     done = 1;
-
+    #endif
 
     pthread_join(thread1, NULL);
     std::cout << "Joined 1" << std::endl;
@@ -570,6 +590,9 @@ int main ()
     
     pthread_join(thread4, NULL);
     std::cout << "Joined 4" << std::endl;
+
+    pthread_join(thread5, NULL);
+    std::cout << "Joined 5" << std::endl;
 
     pthread_mutexattr_destroy(&movement_mutex_attr);
     //std::cout << "Destroyed mutex attr" << std::endl;

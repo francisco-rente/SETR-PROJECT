@@ -37,7 +37,7 @@
 #define DL 19
 
 #define LOG_TIME 1
-#define CONFIG 3
+#define CONFIG 1
 
 #define RES_WIDTH 320
 #define RES_HEIGHT 240

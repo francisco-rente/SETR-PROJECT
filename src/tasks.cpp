@@ -37,6 +37,7 @@
 #define DL 19
 
 #define LOG_TIME 1
+#define CONFIG 3
 
 #define RES_WIDTH 320
 #define RES_HEIGHT 240
@@ -109,6 +110,8 @@ void *run_deadline(void *parameters) {
 
     struct task_params *params = (struct task_params *)parameters;
 
+    mlockall(MCL_CURRENT | MCL_FUTURE);
+
     printf("deadline thread started [%ld]\n", gettid());
 
     attr.size = sizeof(attr);
@@ -172,8 +175,6 @@ void proximity_task() {
         fprintf(stdout, "st_p,%ld,%ld,%ld\n", time.tv_sec, time.tv_nsec, 0);
     #endif
 
-    mlockall(MCL_CURRENT | MCL_FUTURE);
-
     gpioSetPullUpDown(DR, PI_PUD_UP);
     gpioSetPullUpDown(DL, PI_PUD_UP);
 
@@ -201,8 +202,6 @@ void camera_task() {
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time);
         fprintf(stdout, "st_c,%ld,%ld,%ld\n", time.tv_sec, time.tv_nsec, 0);
     #endif
-
-    mlockall(MCL_CURRENT | MCL_FUTURE);
 
     cv::Mat cameraMatrix, distCoeffs;
     float markerLength = 0.05;
@@ -270,6 +269,11 @@ void camera_task() {
             pthread_mutex_unlock(&camera_mutex);
         }
 
+        // imshow("Display window", image);
+        // char key = (char) cv::waitKey(1);
+        // if (key == 27)
+        //      break;
+
         #ifdef LOG_TIME
             clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
             fprintf(stdout, "c,%ld,%ld,%ld\n", time1.tv_sec, time1.tv_nsec, diff(time1,time2).tv_nsec);
@@ -277,12 +281,6 @@ void camera_task() {
         sched_yield();
     }
 }
-
-enum CoordinatorState {
-    ROTATING_STATE,
-    MOVING_FORWARD_STATE,
-    STOP_STATE,
-};
 
 void move(direction dir, int speed) {
     pthread_mutex_lock(&movement_mutex);
@@ -306,12 +304,9 @@ void coordinator_task() {
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time);
         fprintf(stdout, "st_o,%ld,%ld,%ld\n", time.tv_sec, time.tv_nsec, 0);
     #endif
-    mlockall(MCL_CURRENT | MCL_FUTURE);
 
     int counter = 0;
     int current_instruction = -1;
-
-    enum CoordinatorState state = ROTATING_STATE;
 
     while (!done) {
         timespec time1, time2;
@@ -328,11 +323,11 @@ void coordinator_task() {
         } else {
             if(current_instruction == -1 && new_marker_id >= 0 && new_marker_id <= 5) {
                 current_instruction = new_marker_id;
-                counter = 1000;
+                counter = 429; // 3 seconds considering 7ms periods
             }
             if((current_instruction == -1 || current_instruction == 6) && new_marker_id == 6) {
                 current_instruction = new_marker_id;
-                counter = 200;
+                counter = 143; // 1 second considering 7ms periods
             }
 
             if(current_instruction == 0) {
@@ -390,7 +385,6 @@ void motor_task() {
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time);
         fprintf(stdout, "st_m,%ld,%ld,%ld\n", time.tv_sec, time.tv_nsec, 0);
     #endif
-    mlockall(MCL_CURRENT | MCL_FUTURE);
 
     Alphabot alphabot = Alphabot();
     if(alphabot.init()) {
@@ -462,8 +456,14 @@ int main ()
 
     inputVideo.set(cv::CAP_PROP_FRAME_WIDTH, RES_WIDTH);
     inputVideo.set(cv::CAP_PROP_FRAME_HEIGHT, RES_HEIGHT);
-    // inputVideo.set(cv::CAP_PROP_FPS, 45); // Config A
-    inputVideo.set(cv::CAP_PROP_FPS, 25); // Config B
+
+    #if CONFIG==1
+        inputVideo.set(cv::CAP_PROP_FPS, 45); // Config A
+    #elif CONFIG==2
+        inputVideo.set(cv::CAP_PROP_FPS, 25); // Config B
+    #elif CONFIG==3
+        inputVideo.set(cv::CAP_PROP_FPS, 15); // Config B
+    #endif
 
     printf("main thread [%ld]\n", gettid());
 
@@ -485,27 +485,28 @@ int main ()
     pthread_attr_setscope(&init_attr, PTHREAD_SCOPE_SYSTEM);
 
 
+    #if CONFIG==1
     // ---------------- Config A ----------------
     // Distance detection
-    // pthread_t thread1;
-    // struct task_params *params1 = get_task_params(80*us, 7 * ms, 7 * ms, proximity_task);
-    // pthread_create(&thread1, NULL, run_deadline, (void *) params1);
+    pthread_t thread1;
+    struct task_params *params1 = get_task_params(80*us, 7 * ms, 7 * ms, proximity_task);
+    pthread_create(&thread1, NULL, run_deadline, (void *) params1);
 
-    // // Camera 
-    // pthread_t thread2;                                      
-    // struct task_params *params2 = get_task_params((int) 20*ms, (int) 22*ms , (int) 22*ms, camera_task);
-    // pthread_create(&thread2, NULL, run_deadline, (void *) params2);
+    // Camera 
+    pthread_t thread2;                                      
+    struct task_params *params2 = get_task_params((int) 20*ms, (int) 22*ms , (int) 22*ms, camera_task);
+    pthread_create(&thread2, NULL, run_deadline, (void *) params2);
 
-    // // Coordinator
-    // pthread_t thread3;
-    // struct task_params *params3 = get_task_params(80*us,  7 * ms,  7 * ms, coordinator_task);
-    // pthread_create(&thread3, NULL, run_deadline, (void *) params3);
+    // Coordinator
+    pthread_t thread3;
+    struct task_params *params3 = get_task_params(80*us,  7 * ms,  7 * ms, coordinator_task);
+    pthread_create(&thread3, NULL, run_deadline, (void *) params3);
 
-    // // Motor control
-    // pthread_t thread4;
-    // struct task_params *params4 = get_task_params(150*us,  7 * ms,  7 * ms, motor_task);
-    // pthread_create(&thread4, NULL, run_deadline, (void *) params4);
-
+    // Motor control
+    pthread_t thread4;
+    struct task_params *params4 = get_task_params(150*us,  7 * ms,  7 * ms, motor_task);
+    pthread_create(&thread4, NULL, run_deadline, (void *) params4);
+    #elif CONFIG==2
     // ---------------- Config B ----------------
     // Distance detection
     pthread_t thread1;
@@ -526,6 +527,31 @@ int main ()
     pthread_t thread4;
     struct task_params *params4 = get_task_params((int) 600*us,  7 * ms,  7 * ms, motor_task);
     pthread_create(&thread4, NULL, run_deadline, (void *) params4);
+    #elif CONFIG==3
+    // ---------------- Config C ----------------
+    // Distance detection
+    pthread_t thread1;
+    struct task_params *params1 = get_task_params((int) 280*us , 7 * ms, 7 * ms, proximity_task);
+    pthread_create(&thread1, NULL, run_deadline, (void *) params1);
+
+    // Camera 
+    pthread_t thread2;                                      
+    struct task_params *params2 = get_task_params((int) 51*ms, (int) 63*ms , (int) 63*ms, camera_task);
+    pthread_create(&thread2, NULL, run_deadline, (void *) params2);
+
+    // Coordinator
+    pthread_t thread3;
+    struct task_params *params3 = get_task_params((int) 220*us,  7 * ms,  7 * ms, coordinator_task);
+    pthread_create(&thread3, NULL, run_deadline, (void *) params3);
+
+    // Motor control
+    pthread_t thread4;
+    struct task_params *params4 = get_task_params((int) 870*us,  7 * ms,  7 * ms, motor_task);
+    pthread_create(&thread4, NULL, run_deadline, (void *) params4);
+    #else
+    printf("Please use #define CONFIG {1,2,3}\n");
+    return 1;
+    #endif
 
 
     sleep(60);

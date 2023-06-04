@@ -1,0 +1,677 @@
+desc: --stacks=yes
+cmd: ./tasks
+time_unit: i
+#-----------
+snapshot=0
+#-----------
+time=0
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=1
+#-----------
+time=4823941
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=5664
+heap_tree=empty
+#-----------
+snapshot=2
+#-----------
+time=10377821
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1204
+heap_tree=empty
+#-----------
+snapshot=3
+#-----------
+time=14038173
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1204
+heap_tree=empty
+#-----------
+snapshot=4
+#-----------
+time=19677303
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1204
+heap_tree=empty
+#-----------
+snapshot=5
+#-----------
+time=24429759
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1076
+heap_tree=empty
+#-----------
+snapshot=6
+#-----------
+time=30319413
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=924
+heap_tree=empty
+#-----------
+snapshot=7
+#-----------
+time=34351120
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1204
+heap_tree=empty
+#-----------
+snapshot=8
+#-----------
+time=39624570
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1204
+heap_tree=empty
+#-----------
+snapshot=9
+#-----------
+time=44275660
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1204
+heap_tree=empty
+#-----------
+snapshot=10
+#-----------
+time=46939668
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1204
+heap_tree=detailed
+n0: 0 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+#-----------
+snapshot=11
+#-----------
+time=50838416
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1204
+heap_tree=empty
+#-----------
+snapshot=12
+#-----------
+time=56962423
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1204
+heap_tree=empty
+#-----------
+snapshot=13
+#-----------
+time=61417991
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1204
+heap_tree=empty
+#-----------
+snapshot=14
+#-----------
+time=65315985
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1204
+heap_tree=empty
+#-----------
+snapshot=15
+#-----------
+time=70887628
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1204
+heap_tree=empty
+#-----------
+snapshot=16
+#-----------
+time=75531091
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1204
+heap_tree=detailed
+n0: 0 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+#-----------
+snapshot=17
+#-----------
+time=79250063
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1204
+heap_tree=empty
+#-----------
+snapshot=18
+#-----------
+time=83904384
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1204
+heap_tree=empty
+#-----------
+snapshot=19
+#-----------
+time=88552739
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1204
+heap_tree=empty
+#-----------
+snapshot=20
+#-----------
+time=92271299
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1216
+heap_tree=empty
+#-----------
+snapshot=21
+#-----------
+time=97851271
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1204
+heap_tree=empty
+#-----------
+snapshot=22
+#-----------
+time=101570755
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1204
+heap_tree=empty
+#-----------
+snapshot=23
+#-----------
+time=106220160
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1204
+heap_tree=empty
+#-----------
+snapshot=24
+#-----------
+time=110869323
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1204
+heap_tree=empty
+#-----------
+snapshot=25
+#-----------
+time=114588446
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1192
+heap_tree=empty
+#-----------
+snapshot=26
+#-----------
+time=118307092
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=1192
+heap_tree=empty
+#-----------
+snapshot=27
+#-----------
+time=122196446
+mem_heap_B=184532
+mem_heap_extra_B=10676
+mem_stacks_B=144
+heap_tree=detailed
+n10: 184532 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n0: 73904 0xBC0F2EE: ??? (in /usr/lib/arm-linux-gnueabihf/libtasn1.so.6.6.0)
+ n0: 36864 0xAC3783E: std::vector<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > >, std::allocator<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > > > >::_M_default_append(unsigned int) (in /usr/lib/arm-linux-gnueabihf/libsrt-gnutls.so.1.4.2)
+ n0: 23040 0x8AA563A: ??? (in /usr/lib/arm-linux-gnueabihf/libzvbi.so.0.13.2)
+ n0: 20224 0x51A6DFA: ??? (in /usr/lib/arm-linux-gnueabihf/libstdc++.so.6.0.28)
+ n0: 8924 0x5A42B96: g_malloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 7172 0x5A42BFA: g_malloc0 (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 5160 0xB4E410E: ??? (in /usr/lib/arm-linux-gnueabihf/libpixman-1.so.0.40.0)
+ n0: 4116 0x5A42C5A: g_realloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 2960 in 14 places, all below massif's threshold (01.00%)
+ n0: 2168 0xC003E0A: ??? (in /usr/lib/arm-linux-gnueabihf/libgcrypt.so.20.2.8)
+#-----------
+snapshot=28
+#-----------
+time=128515281
+mem_heap_B=161492
+mem_heap_extra_B=10668
+mem_stacks_B=220
+heap_tree=empty
+#-----------
+snapshot=29
+#-----------
+time=131684946
+mem_heap_B=161492
+mem_heap_extra_B=10668
+mem_stacks_B=220
+heap_tree=empty
+#-----------
+snapshot=30
+#-----------
+time=134854522
+mem_heap_B=161492
+mem_heap_extra_B=10668
+mem_stacks_B=220
+heap_tree=empty
+#-----------
+snapshot=31
+#-----------
+time=138024098
+mem_heap_B=161492
+mem_heap_extra_B=10668
+mem_stacks_B=220
+heap_tree=detailed
+n9: 161492 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n0: 73904 0xBC0F2EE: ??? (in /usr/lib/arm-linux-gnueabihf/libtasn1.so.6.6.0)
+ n0: 36864 0xAC3783E: std::vector<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > >, std::allocator<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > > > >::_M_default_append(unsigned int) (in /usr/lib/arm-linux-gnueabihf/libsrt-gnutls.so.1.4.2)
+ n0: 20224 0x51A6DFA: ??? (in /usr/lib/arm-linux-gnueabihf/libstdc++.so.6.0.28)
+ n0: 8924 0x5A42B96: g_malloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 7172 0x5A42BFA: g_malloc0 (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 5160 0xB4E410E: ??? (in /usr/lib/arm-linux-gnueabihf/libpixman-1.so.0.40.0)
+ n0: 4116 0x5A42C5A: g_realloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 2960 in 16 places, all below massif's threshold (01.00%)
+ n0: 2168 0xC003E0A: ??? (in /usr/lib/arm-linux-gnueabihf/libgcrypt.so.20.2.8)
+#-----------
+snapshot=32
+#-----------
+time=142778471
+mem_heap_B=161492
+mem_heap_extra_B=10668
+mem_stacks_B=220
+heap_tree=empty
+#-----------
+snapshot=33
+#-----------
+time=145948187
+mem_heap_B=161492
+mem_heap_extra_B=10668
+mem_stacks_B=220
+heap_tree=empty
+#-----------
+snapshot=34
+#-----------
+time=149117796
+mem_heap_B=161492
+mem_heap_extra_B=10668
+mem_stacks_B=220
+heap_tree=empty
+#-----------
+snapshot=35
+#-----------
+time=153872166
+mem_heap_B=161492
+mem_heap_extra_B=10668
+mem_stacks_B=364
+heap_tree=detailed
+n9: 161492 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n0: 73904 0xBC0F2EE: ??? (in /usr/lib/arm-linux-gnueabihf/libtasn1.so.6.6.0)
+ n0: 36864 0xAC3783E: std::vector<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > >, std::allocator<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > > > >::_M_default_append(unsigned int) (in /usr/lib/arm-linux-gnueabihf/libsrt-gnutls.so.1.4.2)
+ n0: 20224 0x51A6DFA: ??? (in /usr/lib/arm-linux-gnueabihf/libstdc++.so.6.0.28)
+ n0: 8924 0x5A42B96: g_malloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 7172 0x5A42BFA: g_malloc0 (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 5160 0xB4E410E: ??? (in /usr/lib/arm-linux-gnueabihf/libpixman-1.so.0.40.0)
+ n0: 4116 0x5A42C5A: g_realloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 2960 in 16 places, all below massif's threshold (01.00%)
+ n0: 2168 0xC003E0A: ??? (in /usr/lib/arm-linux-gnueabihf/libgcrypt.so.20.2.8)
+#-----------
+snapshot=36
+#-----------
+time=158626544
+mem_heap_B=161492
+mem_heap_extra_B=10668
+mem_stacks_B=364
+heap_tree=empty
+#-----------
+snapshot=37
+#-----------
+time=163381043
+mem_heap_B=161492
+mem_heap_extra_B=10668
+mem_stacks_B=364
+heap_tree=empty
+#-----------
+snapshot=38
+#-----------
+time=166550657
+mem_heap_B=161492
+mem_heap_extra_B=10668
+mem_stacks_B=364
+heap_tree=empty
+#-----------
+snapshot=39
+#-----------
+time=169720256
+mem_heap_B=161492
+mem_heap_extra_B=10668
+mem_stacks_B=348
+heap_tree=detailed
+n9: 161492 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n0: 73904 0xBC0F2EE: ??? (in /usr/lib/arm-linux-gnueabihf/libtasn1.so.6.6.0)
+ n0: 36864 0xAC3783E: std::vector<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > >, std::allocator<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > > > >::_M_default_append(unsigned int) (in /usr/lib/arm-linux-gnueabihf/libsrt-gnutls.so.1.4.2)
+ n0: 20224 0x51A6DFA: ??? (in /usr/lib/arm-linux-gnueabihf/libstdc++.so.6.0.28)
+ n0: 8924 0x5A42B96: g_malloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 7172 0x5A42BFA: g_malloc0 (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 5160 0xB4E410E: ??? (in /usr/lib/arm-linux-gnueabihf/libpixman-1.so.0.40.0)
+ n0: 4116 0x5A42C5A: g_realloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 2960 in 16 places, all below massif's threshold (01.00%)
+ n0: 2168 0xC003E0A: ??? (in /usr/lib/arm-linux-gnueabihf/libgcrypt.so.20.2.8)
+#-----------
+snapshot=40
+#-----------
+time=172889920
+mem_heap_B=161492
+mem_heap_extra_B=10668
+mem_stacks_B=364
+heap_tree=empty
+#-----------
+snapshot=41
+#-----------
+time=176059492
+mem_heap_B=161492
+mem_heap_extra_B=10668
+mem_stacks_B=348
+heap_tree=empty
+#-----------
+snapshot=42
+#-----------
+time=179229125
+mem_heap_B=161492
+mem_heap_extra_B=10668
+mem_stacks_B=364
+heap_tree=empty
+#-----------
+snapshot=43
+#-----------
+time=182398703
+mem_heap_B=161492
+mem_heap_extra_B=10668
+mem_stacks_B=300
+heap_tree=empty
+#-----------
+snapshot=44
+#-----------
+time=185568292
+mem_heap_B=167738
+mem_heap_extra_B=11030
+mem_stacks_B=3944
+heap_tree=detailed
+n10: 167738 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n0: 73904 0xBC0F2EE: ??? (in /usr/lib/arm-linux-gnueabihf/libtasn1.so.6.6.0)
+ n0: 36864 0xAC3783E: std::vector<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > >, std::allocator<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > > > >::_M_default_append(unsigned int) (in /usr/lib/arm-linux-gnueabihf/libsrt-gnutls.so.1.4.2)
+ n0: 20224 0x51A6DFA: ??? (in /usr/lib/arm-linux-gnueabihf/libstdc++.so.6.0.28)
+ n0: 8924 0x5A42B96: g_malloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 7172 0x5A42BFA: g_malloc0 (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 5250 0x400C3BE: _dl_new_object (in /usr/lib/arm-linux-gnueabihf/ld-2.31.so)
+ n0: 5160 0xB4E410E: ??? (in /usr/lib/arm-linux-gnueabihf/libpixman-1.so.0.40.0)
+ n0: 4116 0x5A42C5A: g_realloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 3956 in 20 places, all below massif's threshold (01.00%)
+ n0: 2168 0xC003E0A: ??? (in /usr/lib/arm-linux-gnueabihf/libgcrypt.so.20.2.8)
+#-----------
+snapshot=45
+#-----------
+time=188738371
+mem_heap_B=170150
+mem_heap_extra_B=11178
+mem_stacks_B=1812
+heap_tree=empty
+#-----------
+snapshot=46
+#-----------
+time=191909302
+mem_heap_B=170150
+mem_heap_extra_B=11178
+mem_stacks_B=1812
+heap_tree=empty
+#-----------
+snapshot=47
+#-----------
+time=197421072
+mem_heap_B=176398
+mem_heap_extra_B=11602
+mem_stacks_B=33736
+heap_tree=detailed
+n10: 176398 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n0: 73904 0xBC0F2EE: ??? (in /usr/lib/arm-linux-gnueabihf/libtasn1.so.6.6.0)
+ n0: 36864 0xAC3783E: std::vector<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > >, std::allocator<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > > > >::_M_default_append(unsigned int) (in /usr/lib/arm-linux-gnueabihf/libsrt-gnutls.so.1.4.2)
+ n0: 20224 0x51A6DFA: ??? (in /usr/lib/arm-linux-gnueabihf/libstdc++.so.6.0.28)
+ n0: 8930 in 50 places, all below massif's threshold (01.00%)
+ n0: 8924 0x5A42B96: g_malloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 7172 0x5A42BFA: g_malloc0 (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 5904 0x400C3BE: _dl_new_object (in /usr/lib/arm-linux-gnueabihf/ld-2.31.so)
+ n0: 5200 0x533F22A: __new_exitfn (in /usr/lib/arm-linux-gnueabihf/libc-2.31.so)
+ n0: 5160 0xB4E410E: ??? (in /usr/lib/arm-linux-gnueabihf/libpixman-1.so.0.40.0)
+ n0: 4116 0x5A42C5A: g_realloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+#-----------
+snapshot=48
+#-----------
+time=199257939
+mem_heap_B=176398
+mem_heap_extra_B=11602
+mem_stacks_B=33724
+heap_tree=empty
+#-----------
+snapshot=49
+#-----------
+time=204764643
+mem_heap_B=176398
+mem_heap_extra_B=11602
+mem_stacks_B=33724
+heap_tree=empty
+#-----------
+snapshot=50
+#-----------
+time=206619456
+mem_heap_B=176398
+mem_heap_extra_B=11602
+mem_stacks_B=33712
+heap_tree=empty
+#-----------
+snapshot=51
+#-----------
+time=207835098
+mem_heap_B=177286
+mem_heap_extra_B=11626
+mem_stacks_B=35176
+heap_tree=detailed
+n10: 177286 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n0: 73904 0xBC0F2EE: ??? (in /usr/lib/arm-linux-gnueabihf/libtasn1.so.6.6.0)
+ n0: 36864 0xAC3783E: std::vector<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > >, std::allocator<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > > > >::_M_default_append(unsigned int) (in /usr/lib/arm-linux-gnueabihf/libsrt-gnutls.so.1.4.2)
+ n0: 20224 0x51A6DFA: ??? (in /usr/lib/arm-linux-gnueabihf/libstdc++.so.6.0.28)
+ n0: 9818 in 50 places, all below massif's threshold (01.00%)
+ n0: 8924 0x5A42B96: g_malloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 7172 0x5A42BFA: g_malloc0 (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 5904 0x400C3BE: _dl_new_object (in /usr/lib/arm-linux-gnueabihf/ld-2.31.so)
+ n0: 5200 0x533F22A: __new_exitfn (in /usr/lib/arm-linux-gnueabihf/libc-2.31.so)
+ n0: 5160 0xB4E410E: ??? (in /usr/lib/arm-linux-gnueabihf/libpixman-1.so.0.40.0)
+ n0: 4116 0x5A42C5A: g_realloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+#-----------
+snapshot=52
+#-----------
+time=207835144
+mem_heap_B=177286
+mem_heap_extra_B=11626
+mem_stacks_B=166028
+heap_tree=detailed
+n10: 177286 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n0: 73904 0xBC0F2EE: ??? (in /usr/lib/arm-linux-gnueabihf/libtasn1.so.6.6.0)
+ n0: 36864 0xAC3783E: std::vector<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > >, std::allocator<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > > > >::_M_default_append(unsigned int) (in /usr/lib/arm-linux-gnueabihf/libsrt-gnutls.so.1.4.2)
+ n0: 20224 0x51A6DFA: ??? (in /usr/lib/arm-linux-gnueabihf/libstdc++.so.6.0.28)
+ n0: 9818 in 50 places, all below massif's threshold (01.00%)
+ n0: 8924 0x5A42B96: g_malloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 7172 0x5A42BFA: g_malloc0 (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 5904 0x400C3BE: _dl_new_object (in /usr/lib/arm-linux-gnueabihf/ld-2.31.so)
+ n0: 5200 0x533F22A: __new_exitfn (in /usr/lib/arm-linux-gnueabihf/libc-2.31.so)
+ n0: 5160 0xB4E410E: ??? (in /usr/lib/arm-linux-gnueabihf/libpixman-1.so.0.40.0)
+ n0: 4116 0x5A42C5A: g_realloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+#-----------
+snapshot=53
+#-----------
+time=209825516
+mem_heap_B=177598
+mem_heap_extra_B=11634
+mem_stacks_B=166132
+heap_tree=empty
+#-----------
+snapshot=54
+#-----------
+time=211662434
+mem_heap_B=177598
+mem_heap_extra_B=11634
+mem_stacks_B=166156
+heap_tree=empty
+#-----------
+snapshot=55
+#-----------
+time=213499336
+mem_heap_B=177598
+mem_heap_extra_B=11634
+mem_stacks_B=166144
+heap_tree=empty
+#-----------
+snapshot=56
+#-----------
+time=215530763
+mem_heap_B=177598
+mem_heap_extra_B=11634
+mem_stacks_B=166148
+heap_tree=empty
+#-----------
+snapshot=57
+#-----------
+time=217530767
+mem_heap_B=177598
+mem_heap_extra_B=11634
+mem_stacks_B=166148
+heap_tree=empty
+#-----------
+snapshot=58
+#-----------
+time=219628559
+mem_heap_B=177598
+mem_heap_extra_B=11634
+mem_stacks_B=166148
+heap_tree=empty
+#-----------
+snapshot=59
+#-----------
+time=221726351
+mem_heap_B=177598
+mem_heap_extra_B=11634
+mem_stacks_B=166148
+heap_tree=empty
+#-----------
+snapshot=60
+#-----------
+time=223824143
+mem_heap_B=177598
+mem_heap_extra_B=11634
+mem_stacks_B=166148
+heap_tree=empty
+#-----------
+snapshot=61
+#-----------
+time=225921935
+mem_heap_B=177598
+mem_heap_extra_B=11634
+mem_stacks_B=166148
+heap_tree=empty
+#-----------
+snapshot=62
+#-----------
+time=228019727
+mem_heap_B=177598
+mem_heap_extra_B=11634
+mem_stacks_B=166148
+heap_tree=detailed
+n10: 177598 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n0: 73904 0xBC0F2EE: ??? (in /usr/lib/arm-linux-gnueabihf/libtasn1.so.6.6.0)
+ n0: 36864 0xAC3783E: std::vector<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > >, std::allocator<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > > > >::_M_default_append(unsigned int) (in /usr/lib/arm-linux-gnueabihf/libsrt-gnutls.so.1.4.2)
+ n0: 20224 0x51A6DFA: ??? (in /usr/lib/arm-linux-gnueabihf/libstdc++.so.6.0.28)
+ n0: 10130 in 50 places, all below massif's threshold (01.00%)
+ n0: 8924 0x5A42B96: g_malloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 7172 0x5A42BFA: g_malloc0 (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 5904 0x400C3BE: _dl_new_object (in /usr/lib/arm-linux-gnueabihf/ld-2.31.so)
+ n0: 5200 0x533F22A: __new_exitfn (in /usr/lib/arm-linux-gnueabihf/libc-2.31.so)
+ n0: 5160 0xB4E410E: ??? (in /usr/lib/arm-linux-gnueabihf/libpixman-1.so.0.40.0)
+ n0: 4116 0x5A42C5A: g_realloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+#-----------
+snapshot=63
+#-----------
+time=230117519
+mem_heap_B=177598
+mem_heap_extra_B=11634
+mem_stacks_B=166148
+heap_tree=empty
+#-----------
+snapshot=64
+#-----------
+time=231954527
+mem_heap_B=177598
+mem_heap_extra_B=11634
+mem_stacks_B=166156
+heap_tree=empty
+#-----------
+snapshot=65
+#-----------
+time=233791424
+mem_heap_B=177598
+mem_heap_extra_B=11634
+mem_stacks_B=166144
+heap_tree=empty
+#-----------
+snapshot=66
+#-----------
+time=235628371
+mem_heap_B=177598
+mem_heap_extra_B=11634
+mem_stacks_B=166156
+heap_tree=empty
+#-----------
+snapshot=67
+#-----------
+time=236810374
+mem_heap_B=181694
+mem_heap_extra_B=11642
+mem_stacks_B=165976
+heap_tree=detailed
+n11: 181694 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n0: 73904 0xBC0F2EE: ??? (in /usr/lib/arm-linux-gnueabihf/libtasn1.so.6.6.0)
+ n0: 36864 0xAC3783E: std::vector<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > >, std::allocator<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > > > >::_M_default_append(unsigned int) (in /usr/lib/arm-linux-gnueabihf/libsrt-gnutls.so.1.4.2)
+ n0: 20224 0x51A6DFA: ??? (in /usr/lib/arm-linux-gnueabihf/libstdc++.so.6.0.28)
+ n0: 10130 in 49 places, all below massif's threshold (01.00%)
+ n0: 8924 0x5A42B96: g_malloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 7172 0x5A42BFA: g_malloc0 (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 5904 0x400C3BE: _dl_new_object (in /usr/lib/arm-linux-gnueabihf/ld-2.31.so)
+ n0: 5200 0x533F22A: __new_exitfn (in /usr/lib/arm-linux-gnueabihf/libc-2.31.so)
+ n0: 5160 0xB4E410E: ??? (in /usr/lib/arm-linux-gnueabihf/libpixman-1.so.0.40.0)
+ n0: 4116 0x5A42C5A: g_realloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 4096 0x536B906: _IO_file_doallocate (in /usr/lib/arm-linux-gnueabihf/libc-2.31.so)
+#-----------
+snapshot=68
+#-----------
+time=237013839
+mem_heap_B=181694
+mem_heap_extra_B=11642
+mem_stacks_B=169616
+heap_tree=peak
+n11: 181694 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n0: 73904 0xBC0F2EE: ??? (in /usr/lib/arm-linux-gnueabihf/libtasn1.so.6.6.0)
+ n0: 36864 0xAC3783E: std::vector<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > >, std::allocator<std::__cxx11::list<std::_List_iterator<CInfoBlock*>, std::allocator<std::_List_iterator<CInfoBlock*> > > > >::_M_default_append(unsigned int) (in /usr/lib/arm-linux-gnueabihf/libsrt-gnutls.so.1.4.2)
+ n0: 20224 0x51A6DFA: ??? (in /usr/lib/arm-linux-gnueabihf/libstdc++.so.6.0.28)
+ n0: 10130 in 49 places, all below massif's threshold (01.00%)
+ n0: 8924 0x5A42B96: g_malloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 7172 0x5A42BFA: g_malloc0 (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 5904 0x400C3BE: _dl_new_object (in /usr/lib/arm-linux-gnueabihf/ld-2.31.so)
+ n0: 5200 0x533F22A: __new_exitfn (in /usr/lib/arm-linux-gnueabihf/libc-2.31.so)
+ n0: 5160 0xB4E410E: ??? (in /usr/lib/arm-linux-gnueabihf/libpixman-1.so.0.40.0)
+ n0: 4116 0x5A42C5A: g_realloc (in /usr/lib/arm-linux-gnueabihf/libglib-2.0.so.0.6600.8)
+ n0: 4096 0x536B906: _IO_file_doallocate (in /usr/lib/arm-linux-gnueabihf/libc-2.31.so)

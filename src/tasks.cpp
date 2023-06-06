@@ -28,7 +28,7 @@
 #define DL 19
 #define JD 7
 
-#define LOG_TIME 1
+// #define LOG_TIME 1
 #define CONFIG 1
 #define SHUTDOWN_TASK 1
 
@@ -147,6 +147,7 @@ void *run_deadline(void *parameters) {
 static volatile bool near_object;
 static volatile int marker_id = -1;
 static volatile int center_distance = 0;
+static volatile int marker_area = 0;
 
 enum direction {
     LEFT,
@@ -280,13 +281,14 @@ void camera_task() {
             pthread_mutex_lock(&camera_mutex);
             marker_id = minimum_id;
             center_distance = correct_center_distance;
+            marker_area = maximum_area;
             pthread_mutex_unlock(&camera_mutex);
         }
 
-        // imshow("Display window", image);
-        // char key = (char) cv::waitKey(1);
-        // if (key == 27)
-        //      break;
+        imshow("Display window", image);
+        char key = (char) cv::waitKey(1);
+        if (key == 27)
+             break;
 
         #ifdef LOG_TIME
             clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
@@ -330,6 +332,7 @@ void coordinator_task() {
         pthread_mutex_lock(&camera_mutex);
         int new_marker_id = marker_id;
         int new_center_distance = center_distance;
+        int new_marker_area = marker_area;
         pthread_mutex_unlock(&camera_mutex);
 
         if(near_object == 1) {
@@ -341,7 +344,7 @@ void coordinator_task() {
             }
             if((current_instruction == -1 || current_instruction == 6) && new_marker_id == 6) {
                 current_instruction = new_marker_id;
-                counter = 143; // 1 second considering 7ms periods
+                counter = 71; // 0.5 second considering 7ms periods
             }
 
             if(current_instruction == 0) {
@@ -363,11 +366,20 @@ void coordinator_task() {
                 unbalanced_move(BACKWARD, 20, 50);
             }
             if(current_instruction == 6) {
+                printf("Center distance: %d\n", new_center_distance);
+                printf("Marker area: %d\n", marker_area);
+                int max_speed_difference = (int) (std::min(new_marker_area, 5000) * ( 15.0 / 5000.0));
+                max_speed_difference = std::max(3, max_speed_difference);
+
+                int speed_difference = abs(new_center_distance) * (max_speed_difference/160.0);
+                printf("Max_speed_diff: %d     Speed diff: %d\n", max_speed_difference, speed_difference);
                 if(new_center_distance < -10) {
-                    unbalanced_move(FORWARD, 30, 35);
+                    unbalanced_move(FORWARD, 30, 30 + speed_difference);
+                    printf("Speed: %d %d\n", movement.speed_left, movement.speed_right);
                 }
                 else if(new_center_distance > 10) {
-                    unbalanced_move(FORWARD, 35, 30);
+                    unbalanced_move(FORWARD, 30 + speed_difference, 30);
+                    printf("Speed: %d %d\n", movement.speed_left, movement.speed_right);
                 } else {
                     move(FORWARD, MOVEMENT_SPEED);
                 }
